@@ -1,0 +1,28 @@
+PODS:
+  - dynamic_color (0.0.2):
+    - FlutterMacOS
+  - FlutterMacOS (1.0.0)
+  - window_size (0.0.2):
+    - FlutterMacOS
+
+DEPENDENCIES:
+  - dynamic_color (from `Flutter/ephemeral/.symlinks/plugins/dynamic_color/macos`)
+  - FlutterMacOS (from `Flutter/ephemeral`)
+  - window_size (from `Flutter/ephemeral/.symlinks/plugins/window_size/macos`)
+
+EXTERNAL SOURCES:
+  dynamic_color:
+    :path: Flutter/ephemeral/.symlinks/plugins/dynamic_color/macos
+  FlutterMacOS:
+    :path: Flutter/ephemeral
+  window_size:
+    :path: Flutter/ephemeral/.symlinks/plugins/window_size/macos
+
+SPEC CHECKSUMS:
+  dynamic_color: 394d6a888650f8534e029b27d2f8bc5c64e44008
+  FlutterMacOS: 57701585bf7de1b3fc2bb61f6378d73bbdea8424
+  window_size: 339dafa0b27a95a62a843042038fa6c3c48de195
+
+PODFILE CHECKSUM: 6eac6b3292e5142cfc23bdeb71848a40ec51c14c
+
+COCOAPODS: 1.11.3
