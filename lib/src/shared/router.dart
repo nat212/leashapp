@@ -3,6 +3,8 @@ import 'package:go_router/go_router.dart';
 import 'package:leashapp/src/features/home/view/home_screen.dart';
 import 'package:leashapp/src/shared/views/root_layout.dart';
 
+import '../features/settings/settings.dart';
+
 const _pageKey = ValueKey('_pageKey');
 const _scaffoldKey = ValueKey('_scaffoldKey');
 
@@ -48,5 +50,14 @@ final appRouter = GoRouter(
         ),
       ),
     ),
+    GoRoute(
+        path: '/settings',
+        pageBuilder: (context, state) => const MaterialPage<void>(
+            key: _pageKey,
+            child: RootLayout(
+              key: _scaffoldKey,
+              currentIndex: 1,
+              child: SettingsScreen(),
+            )))
   ],
 );

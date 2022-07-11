@@ -20,7 +20,8 @@ class AdaptiveNavigation extends StatelessWidget {
     return LayoutBuilder(builder: (context, dimens) {
       if (dimens.isTablet) {
         return Scaffold(
-            body: Row(children: [
+            body:
+                Row(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
           NavigationRail(
             extended: dimens.maxWidth >= 800,
             minExtendedWidth: 180,

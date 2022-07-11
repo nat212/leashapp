@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "720481261480",
+    "project_id": "leashapp-co-za",
+    "storage_bucket": "leashapp-co-za.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:720481261480:android:4a66dcdaa0308f43beef9d",
+        "android_client_info": {
+          "package_name": "za.co.leashapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "720481261480-6rm7ef531g19okkqo0fkv70rbtf7cs7j.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAA6WgS0lJEFNCBY7U1Aks9dGw5F4FuqAA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "720481261480-6rm7ef531g19okkqo0fkv70rbtf7cs7j.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "720481261480-8pmpk47irvjlbcb0026naatlq8g3sgm2.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "za.co.leashapp"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

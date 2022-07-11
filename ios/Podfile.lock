@@ -603,12 +603,9 @@ PODS:
     - BoringSSL-GRPC/Interface (= 0.0.24)
   - BoringSSL-GRPC/Interface (0.0.24)
   - cloud_firestore (3.2.1):
-    - Firebase/CoreOnly (~> 9.2.0)
-    - Firebase/Firestore (~> 9.2.0)
+    - Firebase/Firestore (= 9.2.0)
     - firebase_core
-    - FlutterMacOS
-  - dynamic_color (0.0.2):
-    - FlutterMacOS
+    - Flutter
   - Firebase/Analytics (9.2.0):
     - Firebase/Core
   - Firebase/Auth (9.2.0):
@@ -628,20 +625,18 @@ PODS:
   - firebase_analytics (9.1.12):
     - Firebase/Analytics (= 9.2.0)
     - firebase_core
-    - FlutterMacOS
+    - Flutter
   - firebase_auth (3.4.1):
-    - Firebase/Auth (~> 9.2.0)
-    - Firebase/CoreOnly (~> 9.2.0)
+    - Firebase/Auth (= 9.2.0)
     - firebase_core
-    - FlutterMacOS
+    - Flutter
   - firebase_core (1.19.1):
-    - Firebase/CoreOnly (~> 9.2.0)
-    - FlutterMacOS
+    - Firebase/CoreOnly (= 9.2.0)
+    - Flutter
   - firebase_storage (10.3.1):
-    - Firebase/CoreOnly (~> 9.2.0)
-    - Firebase/Storage (~> 9.2.0)
+    - Firebase/Storage (= 9.2.0)
     - firebase_core
-    - FlutterMacOS
+    - Flutter
   - FirebaseAnalytics (9.2.0):
     - FirebaseAnalytics/AdIdSupport (= 9.2.0)
     - FirebaseCore (~> 9.0)
@@ -708,7 +703,7 @@ PODS:
   - FirebaseStorageInternal (9.2.0):
     - FirebaseCore (~> 9.0)
     - GTMSessionFetcher/Core (< 3.0, >= 1.7)
-  - FlutterMacOS (1.0.0)
+  - Flutter (1.0.0)
   - GoogleAppMeasurement (9.2.0):
     - GoogleAppMeasurement/AdIdSupport (= 9.2.0)
     - GoogleUtilities/AppDelegateSwizzler (~> 7.7)
@@ -817,18 +812,14 @@ PODS:
   - nanopb/decode (2.30909.0)
   - nanopb/encode (2.30909.0)
   - PromisesObjC (2.1.1)
-  - window_size (0.0.2):
-    - FlutterMacOS
 
 DEPENDENCIES:
-  - cloud_firestore (from `Flutter/ephemeral/.symlinks/plugins/cloud_firestore/macos`)
-  - dynamic_color (from `Flutter/ephemeral/.symlinks/plugins/dynamic_color/macos`)
-  - firebase_analytics (from `Flutter/ephemeral/.symlinks/plugins/firebase_analytics/macos`)
-  - firebase_auth (from `Flutter/ephemeral/.symlinks/plugins/firebase_auth/macos`)
-  - firebase_core (from `Flutter/ephemeral/.symlinks/plugins/firebase_core/macos`)
-  - firebase_storage (from `Flutter/ephemeral/.symlinks/plugins/firebase_storage/macos`)
-  - FlutterMacOS (from `Flutter/ephemeral`)
-  - window_size (from `Flutter/ephemeral/.symlinks/plugins/window_size/macos`)
+  - cloud_firestore (from `.symlinks/plugins/cloud_firestore/ios`)
+  - firebase_analytics (from `.symlinks/plugins/firebase_analytics/ios`)
+  - firebase_auth (from `.symlinks/plugins/firebase_auth/ios`)
+  - firebase_core (from `.symlinks/plugins/firebase_core/ios`)
+  - firebase_storage (from `.symlinks/plugins/firebase_storage/ios`)
+  - Flutter (from `Flutter`)
 
 SPEC REPOS:
   trunk:
@@ -860,32 +851,27 @@ SPEC REPOS:
 
 EXTERNAL SOURCES:
   cloud_firestore:
-    :path: Flutter/ephemeral/.symlinks/plugins/cloud_firestore/macos
-  dynamic_color:
-    :path: Flutter/ephemeral/.symlinks/plugins/dynamic_color/macos
+    :path: ".symlinks/plugins/cloud_firestore/ios"
   firebase_analytics:
-    :path: Flutter/ephemeral/.symlinks/plugins/firebase_analytics/macos
+    :path: ".symlinks/plugins/firebase_analytics/ios"
   firebase_auth:
-    :path: Flutter/ephemeral/.symlinks/plugins/firebase_auth/macos
+    :path: ".symlinks/plugins/firebase_auth/ios"
   firebase_core:
-    :path: Flutter/ephemeral/.symlinks/plugins/firebase_core/macos
+    :path: ".symlinks/plugins/firebase_core/ios"
   firebase_storage:
-    :path: Flutter/ephemeral/.symlinks/plugins/firebase_storage/macos
-  FlutterMacOS:
-    :path: Flutter/ephemeral
-  window_size:
-    :path: Flutter/ephemeral/.symlinks/plugins/window_size/macos
+    :path: ".symlinks/plugins/firebase_storage/ios"
+  Flutter:
+    :path: Flutter
 
 SPEC CHECKSUMS:
   abseil: ebe5b5529fb05d93a8bdb7951607be08b7fa71bc
   BoringSSL-GRPC: 3175b25143e648463a56daeaaa499c6cb86dad33
-  cloud_firestore: 28a9e0cc7babcd8d3739743c37d9516d6672964d
-  dynamic_color: 394d6a888650f8534e029b27d2f8bc5c64e44008
+  cloud_firestore: f08f98f6bf77dc48c34ae77e2b31d5edcb00f190
   Firebase: 4ba896cb8e5105d4b9e247e1c1b6222b548df55a
-  firebase_analytics: 41d16872b7fa78f334b3d0efc9b5ac2620bfe53c
-  firebase_auth: e1a73aa377a04ee34810fb5cbbc284245e0d05ad
-  firebase_core: 59ec50cc07e85596b4169b30976730a05a020b45
-  firebase_storage: 9b9816e7b607c2c488aec58929ac33a6332c85d7
+  firebase_analytics: 62f21c400c1fe65369985fa8ba68b5ac1d939bb8
+  firebase_auth: 1093e604044edc89df1e9119daeb82a5b0ef5fac
+  firebase_core: 9e09bbfbf5467e459822850732f5fb648f5b1927
+  firebase_storage: 866ba3ca47efe4c4ea66aff966dda0d47984dc28
   FirebaseAnalytics: af5a03a8dff7648c7b8486f6a78b1368e0268dd3
   FirebaseAppCheckInterop: 003b4882460c2827d1e2a1a81b65e88440eb01fa
   FirebaseAuth: 1c574ab64a051dd86dbe7fd5a3f86b58155b3482
@@ -898,7 +884,7 @@ SPEC CHECKSUMS:
   FirebaseInstallations: 21186f0ca7849f90f4a3219fa31a5eca2e30f113
   FirebaseStorage: b47b4a04062ab07911063571241c103a8a2a2332
   FirebaseStorageInternal: 50c963664bc73739b68eb2d8427c91de5168dbcf
-  FlutterMacOS: 57701585bf7de1b3fc2bb61f6378d73bbdea8424
+  Flutter: 50d75fe2f02b26cc09d224853bb45737f8b3214a
   GoogleAppMeasurement: 7a33224321f975d58c166657260526775d9c6b1a
   GoogleDataTransport: 5fffe35792f8b96ec8d6775f5eccd83c998d5a3b
   GoogleUtilities: e0913149f6b0625b553d70dae12b49fc62914fd1
@@ -909,8 +895,7 @@ SPEC CHECKSUMS:
   Libuv-gRPC: 55e51798e14ef436ad9bc45d12d43b77b49df378
   nanopb: b552cce312b6c8484180ef47159bc0f65a1f0431
   PromisesObjC: ab77feca74fa2823e7af4249b8326368e61014cb
-  window_size: 339dafa0b27a95a62a843042038fa6c3c48de195
 
-PODFILE CHECKSUM: c7161fcf45d4fd9025dc0f48a76d6e64e52f8176
+PODFILE CHECKSUM: aafe91acc616949ddb318b77800a7f51bffa2a4c
 
 COCOAPODS: 1.11.3

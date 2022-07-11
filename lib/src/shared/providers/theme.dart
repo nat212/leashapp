@@ -106,7 +106,7 @@ class ThemeProvider extends InheritedWidget {
 
   CardTheme cardTheme() {
     return CardTheme(
-      elevation: 0,
+      elevation: 2,
       shape: shapeMedium,
       clipBehavior: Clip.antiAlias,
     );
@@ -170,6 +170,20 @@ class ThemeProvider extends InheritedWidget {
     );
   }
 
+  ProgressIndicatorThemeData progressIndicatorTheme(ColorScheme colors) {
+    return const ProgressIndicatorThemeData();
+  }
+
+  FloatingActionButtonThemeData floatingActionButtonTheme(ColorScheme colors) {
+    return const FloatingActionButtonThemeData();
+  }
+
+  InputDecorationTheme inputDecorationTheme(ColorScheme colors) {
+    return const InputDecorationTheme(
+      border: OutlineInputBorder(),
+    );
+  }
+
   ThemeData light([Color? targetColor]) {
     final colorScheme = colors(Brightness.light, targetColor);
     return ThemeData.light().copyWith(
@@ -183,6 +197,9 @@ class ThemeProvider extends InheritedWidget {
       tabBarTheme: tabBarTheme(colorScheme),
       drawerTheme: drawerTheme(colorScheme),
       navigationRailTheme: navigationRailTheme(colorScheme),
+      progressIndicatorTheme: progressIndicatorTheme(colorScheme),
+      floatingActionButtonTheme: floatingActionButtonTheme(colorScheme),
+      inputDecorationTheme: inputDecorationTheme(colorScheme),
       scaffoldBackgroundColor: colorScheme.background,
       useMaterial3: true,
     );
@@ -201,6 +218,9 @@ class ThemeProvider extends InheritedWidget {
       tabBarTheme: tabBarTheme(colorScheme),
       drawerTheme: drawerTheme(colorScheme),
       navigationRailTheme: navigationRailTheme(colorScheme),
+      progressIndicatorTheme: progressIndicatorTheme(colorScheme),
+      floatingActionButtonTheme: floatingActionButtonTheme(colorScheme),
+      inputDecorationTheme: inputDecorationTheme(colorScheme),
       scaffoldBackgroundColor: colorScheme.background,
       useMaterial3: true,
     );
