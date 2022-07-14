@@ -123,7 +123,7 @@ class ThemeProvider extends InheritedWidget {
 
   AppBarTheme appBarTheme(ColorScheme colors) {
     return AppBarTheme(
-      elevation: 0,
+      elevation: 4,
       backgroundColor: colors.surface,
       foregroundColor: colors.onBackground,
     );

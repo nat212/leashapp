@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
 import 'package:leashapp/src/shared/extensions.dart';
 import 'package:leashapp/src/shared/providers/settings.dart';
@@ -22,48 +23,110 @@ class TrackerDetail extends StatefulWidget {
 class _TrackerDetailState extends State<TrackerDetail> {
   @override
   Widget build(BuildContext context) {
-    final tracker = TrackerProvider.instance.get(widget.trackerId);
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(tracker!.name),
-        leading: IconButton(
-          icon: const Icon(Icons.close),
-          onPressed: () => GoRouter.of(context).go('/'),
-        ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.edit),
-            onPressed: () => _editTracker(tracker),
+    return ValueListenableBuilder<Box<Tracker>>(
+        valueListenable: TrackerProvider.instance.listenable,
+        builder: (context, box, _) {
+          final tracker = box.get(widget.trackerId);
+          return Scaffold(
+            appBar: AppBar(
+              title: Text(tracker!.name),
+              centerTitle: true,
+              leading: IconButton(
+                icon: const Icon(Icons.close),
+                onPressed: () => GoRouter.of(context).go('/'),
+              ),
+              actions: [
+                IconButton(
+                  icon: const Icon(Icons.edit),
+                  onPressed: () => _editTracker(tracker),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.delete),
+                  onPressed: () => _deleteTracker(tracker),
+                ),
+              ],
+            ),
+            body: LayoutBuilder(builder: (context, constraints) {
+              if (constraints.isMobile) {
+                return _buildMobileBody(
+                  context: context,
+                  tracker: tracker,
+                  constraints: constraints,
+                );
+              } else {
+                return _buildDesktopBody(
+                    context: context,
+                    tracker: tracker,
+                    constraints: constraints);
+              }
+            }),
+          );
+        });
+  }
+
+  List<Widget> _buildHeader(Tracker tracker) {
+    final theme = Theme.of(context);
+    final amountTheme =
+        theme.textTheme.headline6!.copyWith(color: theme.colorScheme.primary);
+    final amountSpent = tracker.amount * 0.7754;
+    return <Widget>[
+      if (tracker.description != null)
+        Text(tracker.description!,
+            style: Theme.of(context).textTheme.bodyText1,
+            textAlign: TextAlign.center),
+      if (tracker.description != null) const SizedBox(height: 32),
+      Row(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Stack(
+            alignment: Alignment.center,
+            children: [
+              CircularProgressIndicator(
+                value: amountSpent / tracker.amount,
+                backgroundColor: theme.colorScheme.onPrimary,
+              ),
+              Container(
+                  alignment: Alignment.center,
+                  child: Text(
+                    NumberFormat.percentPattern()
+                        .format((amountSpent / tracker.amount)),
+                    style: theme.textTheme.bodySmall,
+                    textAlign: TextAlign.center,
+                  )),
+            ],
           ),
-          IconButton(
-            icon: const Icon(Icons.delete),
-            onPressed: () => _deleteTracker(tracker),
+          const SizedBox(width: 16),
+          Text(
+            _formatCurrency(amountSpent),
+            style: amountTheme,
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(width: 8),
+          Text(
+            '/',
+            style: amountTheme,
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(width: 8),
+          Text(
+            _formatCurrency(tracker.amount),
+            style: amountTheme,
+            textAlign: TextAlign.center,
           ),
         ],
       ),
-      body: LayoutBuilder(builder: (context, constraints) {
-        if (constraints.isMobile) {
-          return _buildMobileBody(
-            context: context,
-            tracker: tracker,
-            constraints: constraints,
-          );
-        } else {
-          return _buildDesktopBody(
-              context: context, tracker: tracker, constraints: constraints);
-        }
-      }),
-    );
+      const SizedBox(height: 4),
+      const Divider(),
+      const SizedBox(height: 16),
+    ];
   }
 
   Widget _buildDesktopBody(
       {required BuildContext context,
       required Tracker tracker,
       required BoxConstraints constraints}) {
-    final theme = Theme.of(context);
-    final amountTheme =
-        theme.textTheme.headline6!.copyWith(color: theme.colorScheme.primary);
-    final amountSpent = tracker.amount * 0.7754;
     return Container(
         alignment: Alignment.topCenter,
         child: Container(
@@ -75,57 +138,8 @@ class _TrackerDetailState extends State<TrackerDetail> {
             mainAxisAlignment: MainAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              if (tracker.description != null)
-                Text(tracker.description!,
-                    style: Theme.of(context).textTheme.bodyText1,
-                    textAlign: TextAlign.center),
-              if (tracker.description != null) const SizedBox(height: 32),
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      CircularProgressIndicator(
-                        value: amountSpent / tracker.amount,
-                        backgroundColor: theme.colorScheme.onPrimary,
-                      ),
-                      Container(
-                          alignment: Alignment.center,
-                          child: Text(
-                            NumberFormat.percentPattern()
-                                .format((amountSpent / tracker.amount)),
-                            style: theme.textTheme.bodySmall,
-                            textAlign: TextAlign.center,
-                          )),
-                    ],
-                  ),
-                  const SizedBox(width: 16),
-                  Text(
-                    _formatCurrency(amountSpent),
-                    style: amountTheme,
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(width: 8),
-                  Text(
-                    '/',
-                    style: amountTheme,
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(width: 8),
-                  Text(
-                    _formatCurrency(tracker.amount),
-                    style: amountTheme,
-                    textAlign: TextAlign.center,
-                  ),
-                ],
-              ),
-              const SizedBox(height: 4),
-              const Divider(),
-              const SizedBox(height: 16),
+            children: [
+              ..._buildHeader(tracker),
             ],
           ),
         ));
@@ -135,7 +149,14 @@ class _TrackerDetailState extends State<TrackerDetail> {
       {required BuildContext context,
       required Tracker tracker,
       required BoxConstraints constraints}) {
-    return Container();
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        children: [
+          ..._buildHeader(tracker),
+        ],
+      ),
+    );
   }
 
   String _formatCurrency(double amount) {
