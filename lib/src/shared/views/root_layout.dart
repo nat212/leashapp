@@ -49,7 +49,7 @@ class RootLayout extends StatelessWidget {
 class _Switcher extends StatelessWidget {
   final bool isDesktop = defaultTargetPlatform == TargetPlatform.linux ||
       defaultTargetPlatform == TargetPlatform.windows ||
-      defaultTargetPlatform == TargetPlatform.windows;
+      defaultTargetPlatform == TargetPlatform.macOS;
 
   _Switcher({
     required this.child,

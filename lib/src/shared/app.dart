@@ -1,6 +1,7 @@
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
 import 'package:leashapp/src/shared/providers/auth.dart';
+import 'package:leashapp/src/shared/providers/settings.dart';
 import 'package:leashapp/src/shared/providers/theme.dart';
 import 'package:leashapp/src/shared/router.dart';
 
@@ -14,7 +15,7 @@ class LeashApp extends StatefulWidget {
 }
 
 class _LeashAppState extends State<LeashApp> {
-  final settings = ValueNotifier(ThemeSettings(sourceColor: const Color(0xFF874977), themeMode: ThemeMode.system));
+  final settings = ValueNotifier(ThemeSettings(sourceColor: const Color(0xFF874977), themeMode: SettingsProvider.themeMode));
   @override
   Widget build(BuildContext context) {
     return DynamicColorBuilder(builder: (lightDynamic, darkDynamic) => ThemeProvider(

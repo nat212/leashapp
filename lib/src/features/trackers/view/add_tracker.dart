@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:leashapp/src/shared/classes/tracker.dart';
-import 'package:leashapp/src/shared/views/keypress_form.dart';
 
 class AddTracker extends StatefulWidget {
-  const AddTracker({Key? key}) : super(key: key);
+  const AddTracker({Key? key, this.tracker}) : super(key: key);
+
+  final Tracker? tracker;
 
   @override
   State<AddTracker> createState() => _AddTrackerState();
@@ -18,24 +18,27 @@ class _AddTrackerState extends State<AddTracker> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   @override
+  void initState() {
+    super.initState();
+    _name = widget.tracker?.name;
+    _description = widget.tracker?.description;
+    _amount = widget.tracker?.amount;
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Dialog(
         child: Container(
             padding: const EdgeInsets.all(16),
             constraints: const BoxConstraints(maxWidth: 300),
-            child: KeypressForm(
-                onSubmit: () {
-                  if (_formKey.currentState?.validate() ?? false) {
-                    Navigator.pop(context, Tracker(name: _name!, description: _description, amount: _amount!));
-                  }
-                },
-                formKey: _formKey,
+            child: Form(
+                key: _formKey,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
-                    Text('Add Tracker',
+                    Text('${widget.tracker != null ? 'Edit' : 'Add'} Tracker',
                         style: Theme.of(context).textTheme.headline6),
                     const SizedBox(height: 32),
                     TextFormField(
@@ -53,6 +56,7 @@ class _AddTrackerState extends State<AddTracker> {
                         }
                         return null;
                       },
+                      initialValue: _name,
                     ),
                     const SizedBox(height: 16),
                     TextFormField(
@@ -66,6 +70,8 @@ class _AddTrackerState extends State<AddTracker> {
                       },
                       minLines: 2,
                       maxLines: 5,
+                      maxLength: 250,
+                      initialValue: _description,
                     ),
                     const SizedBox(height: 16),
                     TextFormField(
@@ -88,6 +94,7 @@ class _AddTrackerState extends State<AddTracker> {
                         }
                         return null;
                       },
+                      initialValue: _amount?.toString(),
                     ),
                     const SizedBox(height: 16),
                     Row(
@@ -99,14 +106,16 @@ class _AddTrackerState extends State<AddTracker> {
                             },
                             child: const Text('Cancel')),
                         TextButton(
-                            onPressed: _formKey.currentState?.validate() ?? false
-                                ? () {
-                                    Navigator.of(context).pop(Tracker(
-                                        name: _name!,
-                                        amount: _amount!,
-                                        description: _description));
-                                  }
-                                : null,
+                            onPressed:
+                                _formKey.currentState?.validate() ?? false
+                                    ? () {
+                                        Navigator.of(context).pop(Tracker(
+                                            id: widget.tracker?.id,
+                                            name: _name!,
+                                            amount: _amount!,
+                                            description: _description));
+                                      }
+                                    : null,
                             child: const Text('Submit')),
                       ],
                     )

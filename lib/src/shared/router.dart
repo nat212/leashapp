@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:leashapp/src/features/home/view/home_screen.dart';
+import 'package:leashapp/src/features/settings/view/signin_screen.dart';
+import 'package:leashapp/src/features/trackers/trackers.dart';
 import 'package:leashapp/src/shared/views/root_layout.dart';
 
 import '../features/settings/settings.dart';
@@ -36,6 +38,8 @@ const List<NavigationDestination> destinations = [
 ];
 
 final appRouter = GoRouter(
+  restorationScopeId: 'leashapp',
+  urlPathStrategy: UrlPathStrategy.path,
   navigatorBuilder: (context, state, child) => child,
   routes: [
     // HomeScreen
@@ -58,6 +62,23 @@ final appRouter = GoRouter(
               key: _scaffoldKey,
               currentIndex: 1,
               child: SettingsScreen(),
-            )))
+            ))),
+    GoRoute(
+        path: '/signin',
+        pageBuilder: (context, state) => const MaterialPage<void>(
+            key: _pageKey,
+            child: RootLayout(
+                key: _scaffoldKey, currentIndex: 1, child: SigninScreen()))),
+    GoRoute(
+      path: '/trackers/:id',
+      pageBuilder: (context, state) => MaterialPage<void>(
+        key: state.pageKey,
+        child: RootLayout(
+          key: _scaffoldKey,
+          currentIndex: 0,
+          child: TrackerDetail(trackerId: state.params['id']!),
+        ),
+      ),
+    ),
   ],
 );

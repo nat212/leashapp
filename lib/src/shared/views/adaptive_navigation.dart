@@ -34,6 +34,7 @@ class AdaptiveNavigation extends StatelessWidget {
             selectedIndex: selectedIndex,
             onDestinationSelected: onDestinationSelected,
           ),
+          const VerticalDivider(width: 2),
           Expanded(child: child),
         ]));
       }

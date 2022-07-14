@@ -1,23 +1,35 @@
+import 'dart:ui';
+
 import 'package:currency_picker/currency_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:leashapp/src/shared/extensions.dart';
 import 'package:leashapp/src/shared/providers/settings.dart';
 import 'package:leashapp/src/shared/providers/trackers.dart';
+import 'package:leashapp/src/shared/widgets/animated_blur.dart';
 
 import '../../../shared/classes/tracker.dart';
+import '../../../shared/providers/theme.dart';
 
 class TrackerCard extends StatefulWidget {
-  const TrackerCard({Key? key, required this.tracker, required this.provider})
+  const TrackerCard(
+      {Key? key,
+      required this.tracker,
+      required this.provider,
+      required this.constraints})
       : super(key: key);
 
   final Tracker tracker;
   final TrackersProvider provider;
+  final BoxConstraints constraints;
 
   @override
   State<TrackerCard> createState() => _TrackerCardState();
 }
 
 class _TrackerCardState extends State<TrackerCard> {
+  bool _hovered = false;
+
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
@@ -25,70 +37,118 @@ class _TrackerCardState extends State<TrackerCard> {
         valueListenable: SettingsProvider.instance,
         builder: (context, value, child) {
           final Currency currency = value.currency;
-          return Card(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Expanded(
-                    child: Padding(
-                        padding: const EdgeInsets.all(16),
-                        child: Column(children: [
-                          Text(widget.tracker.name,
-                              style: Theme.of(context).textTheme.headline6),
-                          const SizedBox(height: 16),
-                          if (widget.tracker.description != null)
-                            Text(widget.tracker.description!, overflow: TextOverflow.ellipsis),
-                          const Spacer(),
-                          Text(
-                              '${_amountAsCurrency(widget.tracker.amount, currency)} left',
-                              style: theme.textTheme.bodyMedium!.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                  color: theme.colorScheme.secondary)),
-                        ]))),
-                Padding(
-                    padding: const EdgeInsets.all(4),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        IconButton(
-                          onPressed: () {
-                            _deleteTracker(widget.tracker);
-                          },
-                          icon: const Icon(Icons.delete),
-                          color: theme.colorScheme.error,
+          const animationCurve = Curves.easeInOut;
+          final themeBorderRadius =
+              ThemeProvider.of(context).mediumBorderRadius;
+          final borderRadius =
+              _hovered ? BorderRadius.circular(20) : themeBorderRadius;
+          return widget.constraints.isTablet
+              ? MouseRegion(
+                  cursor: SystemMouseCursors.click,
+                  onEnter: (_) {
+                    setState(() {
+                      _hovered = true;
+                    });
+                  },
+                  onExit: (_) {
+                    setState(() {
+                      _hovered = false;
+                    });
+                  },
+                  child: AnimatedContainer(
+                      duration: kThemeAnimationDuration,
+                      curve: animationCurve,
+                      decoration: BoxDecoration(
+                        borderRadius: borderRadius,
+                        color: theme.colorScheme.surfaceVariant,
+                        border: Border.all(
+                          color: theme.colorScheme.outline
+                              .withOpacity(_hovered ? 1 : 0),
+                          width: 1,
                         ),
-                      ],
-                    ))
-              ],
-            ),
-          );
+                      ),
+                      foregroundDecoration: BoxDecoration(
+                        borderRadius: borderRadius,
+                      ),
+                      child: TweenAnimationBuilder<BorderRadius>(
+                          duration: kThemeAnimationDuration,
+                          curve: animationCurve,
+                          tween: Tween(
+                              begin: BorderRadius.zero, end: borderRadius),
+                          builder: (context, borderRadius, child) => ClipRRect(
+                                clipBehavior: Clip.antiAlias,
+                                borderRadius: borderRadius,
+                                child: child,
+                              ),
+                          child: Stack(children: [
+                            Container(
+                              alignment: Alignment.center,
+                              child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Text(widget.tracker.name,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .headline6),
+                                    const SizedBox(height: 8),
+                                    Center(
+                                      child: Text(
+                                          '${_amountAsCurrency(widget.tracker.amount, currency)} left',
+                                          style: theme.textTheme.bodyMedium!
+                                              .copyWith(
+                                                  fontWeight: FontWeight.bold,
+                                                  color: theme
+                                                      .colorScheme.secondary)),
+                                    ),
+                                  ]),
+                            ),
+                            AnimatedOpacity(
+                                opacity: _hovered ? 1 : 0,
+                                duration: kThemeAnimationDuration,
+                                curve: animationCurve,
+                                child: AnimatedBlurContainer(
+                                  blurRadius: _hovered ? 3.0 : 0.001,
+                                      child: Container(
+                                    alignment: Alignment.center,
+                                    decoration: BoxDecoration(
+                                      color: theme.colorScheme.surface
+                                          .withOpacity(0.5),
+                                    ),
+                                    child: widget.tracker.description == null
+                                        ? Container()
+                                        : Center(
+                                            child: Text(
+                                                widget.tracker.description!),
+                                          )))),
+                          ]))))
+              : Container(
+                  decoration: BoxDecoration(
+                    borderRadius: themeBorderRadius,
+                    color: theme.colorScheme.surfaceVariant,
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
+                      child: Column(mainAxisSize: MainAxisSize.min, children: [
+                        Text(widget.tracker.name,
+                            style: Theme.of(context).textTheme.headline6),
+                        const SizedBox(height: 16),
+                        if (widget.tracker.description != null)
+                          Text(widget.tracker.description!,
+                              overflow: TextOverflow.ellipsis),
+                        if (widget.tracker.description != null)
+                          const SizedBox(height: 16.0),
+                        Text(
+                            '${_amountAsCurrency(widget.tracker.amount, currency)} left',
+                            style: theme.textTheme.bodyMedium!.copyWith(
+                                fontWeight: FontWeight.bold,
+                                color: theme.colorScheme.secondary)),
+                      ])),
+                  ]),
+                );
         });
-  }
-
-  void _deleteTracker(Tracker tracker) async {
-    final bool result = await showDialog<bool>(context: context, builder: (context) {
-      return AlertDialog(
-        title: const Text('Delete Tracker'),
-        content: Text('Are you sure you want to delete ${tracker.name}?'),
-        actions: [
-          TextButton(
-            child: const Text('Cancel'),
-            onPressed: () {
-              Navigator.of(context).pop(false);
-            },
-          ),
-          TextButton(
-            child: const Text('Delete'),
-            onPressed: () {
-              Navigator.of(context).pop(true);
-            },
-          ),
-        ],
-      );
-    }) ?? false;
-    if (result) {
-      widget.provider.removeTracker(tracker);
-    }
   }
 
   String _amountAsCurrency(double amount, Currency currency) {

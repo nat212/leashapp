@@ -100,8 +100,10 @@ class ThemeProvider extends InheritedWidget {
         brightness: brightness);
   }
 
+  BorderRadius get mediumBorderRadius => BorderRadius.circular(8);
+
   ShapeBorder get shapeMedium => RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: mediumBorderRadius,
       );
 
   CardTheme cardTheme() {
@@ -123,7 +125,7 @@ class ThemeProvider extends InheritedWidget {
     return AppBarTheme(
       elevation: 0,
       backgroundColor: colors.surface,
-      foregroundColor: colors.onSurface,
+      foregroundColor: colors.onBackground,
     );
   }
 
@@ -161,7 +163,9 @@ class ThemeProvider extends InheritedWidget {
   }
 
   NavigationRailThemeData navigationRailTheme(ColorScheme colors) {
-    return const NavigationRailThemeData();
+    return const NavigationRailThemeData(
+      useIndicator: true,
+    );
   }
 
   DrawerThemeData drawerTheme(ColorScheme colors) {
@@ -184,6 +188,10 @@ class ThemeProvider extends InheritedWidget {
     );
   }
 
+  ButtonThemeData buttonTheme(ColorScheme colors) {
+    return const ButtonThemeData();
+  }
+
   ThemeData light([Color? targetColor]) {
     final colorScheme = colors(Brightness.light, targetColor);
     return ThemeData.light().copyWith(
@@ -200,6 +208,7 @@ class ThemeProvider extends InheritedWidget {
       progressIndicatorTheme: progressIndicatorTheme(colorScheme),
       floatingActionButtonTheme: floatingActionButtonTheme(colorScheme),
       inputDecorationTheme: inputDecorationTheme(colorScheme),
+      buttonTheme: buttonTheme(colorScheme),
       scaffoldBackgroundColor: colorScheme.background,
       useMaterial3: true,
     );
@@ -221,6 +230,7 @@ class ThemeProvider extends InheritedWidget {
       progressIndicatorTheme: progressIndicatorTheme(colorScheme),
       floatingActionButtonTheme: floatingActionButtonTheme(colorScheme),
       inputDecorationTheme: inputDecorationTheme(colorScheme),
+      buttonTheme: buttonTheme(colorScheme),
       scaffoldBackgroundColor: colorScheme.background,
       useMaterial3: true,
     );

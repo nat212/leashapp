@@ -24,6 +24,7 @@
     "indexes": "firebase/firestore.indexes.json"
   },
   "hosting": {
+    "target": "webapp",
     "public": "build/web",
     "ignore": [
       "firebase.json",
@@ -34,6 +35,17 @@
       {
         "source": "**",
         "destination": "/index.html"
+      }
+    ],
+    "headers": [
+      {
+        "source": "**",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "no-cache"
+          }
+        ]
       }
     ]
   },

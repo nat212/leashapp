@@ -1,5 +1,14 @@
 {
   "projects": {
     "default": "leashapp-co-za"
+  },
+  "targets": {
+    "leashapp-co-za": {
+      "hosting": {
+        "webapp": [
+          "app-leashapp-co-za"
+        ]
+      }
+    }
   }
 }

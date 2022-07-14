@@ -22,6 +22,19 @@ extension HumanReadableName on ThemeMode {
   }
 }
 
+extension SerialisedThemeMode on ThemeMode {
+  String get serialised {
+    switch(this) {
+      case ThemeMode.system:
+        return 'system';
+      case ThemeMode.light:
+        return 'light';
+      case ThemeMode.dark:
+        return 'dark';
+    }
+  }
+}
+
 extension HumanReadableCurrency on Currency {
   String get humanReadable => '$name ($code)';
 }

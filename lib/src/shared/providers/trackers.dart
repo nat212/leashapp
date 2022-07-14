@@ -24,6 +24,8 @@ class TrackersProvider extends ValueNotifier<List<Tracker>> {
     notifyListeners();
   }
 
+  String get path => _trackersCollection.path;
+
   final CollectionReference _trackersCollection;
   late Stream<List<Tracker>> _trackers$;
   List<Tracker> _trackers = [];
@@ -44,7 +46,16 @@ class TrackersProvider extends ValueNotifier<List<Tracker>> {
   }
 
   Future<void> updateTracker(Tracker tracker) async {
-    _trackersCollection.doc(tracker.id).update(tracker.toMap());
+    await _trackersCollection.doc(tracker.id).update(tracker.toMap());
     await _fetchTrackers();
+  }
+
+  Stream<Tracker> getTracker(String id) {
+    return _trackersCollection.doc(id).snapshots().map((e) {
+      final String id = e.id;
+      final Map<String, dynamic> data = e.data() as Map<String, dynamic>;
+      data['id'] = id;
+      return Tracker.fromMap(data);
+    });
   }
 }
