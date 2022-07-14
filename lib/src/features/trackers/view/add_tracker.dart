@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:leashapp/src/shared/classes/tracker.dart';
+
+import '../../../shared/models/models.dart';
 
 class AddTracker extends StatefulWidget {
   const AddTracker({Key? key, this.tracker}) : super(key: key);
@@ -109,11 +110,16 @@ class _AddTrackerState extends State<AddTracker> {
                             onPressed:
                                 _formKey.currentState?.validate() ?? false
                                     ? () {
-                                        Navigator.of(context).pop(Tracker(
-                                            id: widget.tracker?.id,
-                                            name: _name!,
-                                            amount: _amount!,
-                                            description: _description));
+                                        Navigator.of(context).pop(widget.tracker
+                                                ?.update(
+                                                    name: _name,
+                                                    description: _description,
+                                                    amount: _amount) ??
+                                            Tracker(
+                                              amount: _amount ?? 0,
+                                              name: _name ?? '',
+                                              description: _description ?? '',
+                                            ));
                                       }
                                     : null,
                             child: const Text('Submit')),

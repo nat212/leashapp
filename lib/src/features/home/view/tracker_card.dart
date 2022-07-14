@@ -5,22 +5,19 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:leashapp/src/shared/extensions.dart';
 import 'package:leashapp/src/shared/providers/settings.dart';
-import 'package:leashapp/src/shared/providers/trackers.dart';
 import 'package:leashapp/src/shared/widgets/animated_blur.dart';
 
-import '../../../shared/classes/tracker.dart';
+import '../../../shared/models/models.dart';
 import '../../../shared/providers/theme.dart';
 
 class TrackerCard extends StatefulWidget {
   const TrackerCard(
       {Key? key,
       required this.tracker,
-      required this.provider,
       required this.constraints})
       : super(key: key);
 
   final Tracker tracker;
-  final TrackersProvider provider;
   final BoxConstraints constraints;
 
   @override
