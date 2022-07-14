@@ -26,8 +26,8 @@ class NavigationDestination {
 
 const List<NavigationDestination> destinations = [
   NavigationDestination(
-    label: 'Home',
-    icon: Icon(Icons.home),
+    label: 'Trackers',
+    icon: Icon(Icons.track_changes),
     route: '/',
   ),
   NavigationDestination(

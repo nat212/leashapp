@@ -23,6 +23,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
     _brightness = ThemeProvider.of(context).settings.value.themeMode;
     _currency = SettingsProvider.instance.value.currency;
     return Scaffold(
+      appBar: AppBar(
+        title: const Text('Settings'),
+      ),
       body: Container(
           padding: const EdgeInsets.all(32),
           child: ListView(

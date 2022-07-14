@@ -3,6 +3,8 @@ import 'package:leashapp/src/features/home/view/tracker_list.dart';
 import 'package:leashapp/src/features/trackers/trackers.dart';
 import 'package:leashapp/src/shared/providers/trackers.dart';
 
+import '../../../shared/models/models.dart';
+
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
 
@@ -14,6 +16,9 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text('Trackers'),
+      ),
       body: const TrackerList(),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -27,10 +32,12 @@ class _HomeScreenState extends State<HomeScreen> {
   void _addTracker() async {
     final result = await showDialog(
         context: context, builder: (context) => const AddTracker());
-    TrackerProvider.instance.addTracker(
-      name: result.name,
-      amount: result.amount,
-      description: result.description,
-    );
+    if (result is Tracker) {
+      TrackerProvider.instance.addTracker(
+        name: result.name,
+        amount: result.amount,
+        description: result.description,
+      );
+    }
   }
 }
