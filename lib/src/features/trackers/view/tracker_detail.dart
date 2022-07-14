@@ -6,16 +6,14 @@ import 'package:intl/intl.dart';
 import 'package:leashapp/src/shared/extensions.dart';
 import 'package:leashapp/src/shared/providers/settings.dart';
 import 'package:leashapp/src/shared/providers/trackers.dart';
-import 'package:leashapp/src/shared/views/loader.dart';
-import 'package:leashapp/src/shared/widgets/user_builder.dart';
 
-import '../../../shared/classes/tracker.dart';
+import '../../../shared/models/models.dart';
 import '../trackers.dart';
 
 class TrackerDetail extends StatefulWidget {
   const TrackerDetail({Key? key, required this.trackerId}) : super(key: key);
 
-  final String trackerId;
+  final int trackerId;
 
   @override
   State<TrackerDetail> createState() => _TrackerDetailState();
@@ -24,64 +22,43 @@ class TrackerDetail extends StatefulWidget {
 class _TrackerDetailState extends State<TrackerDetail> {
   @override
   Widget build(BuildContext context) {
-    return UserBuilder(builder: (context, user) {
-      if (user == null) {
-        return const Loader();
-      }
-      final TrackersProvider provider = TrackersProvider(user);
-      return StreamBuilder<Tracker>(
-          stream: provider.getTracker(widget.trackerId),
-          builder: (context, snapshot) {
-            if (snapshot.hasError) {
-              return const Center(child: Text('Error'));
-            }
-            if (!snapshot.hasData) {
-              return const Loader();
-            }
-            final tracker = snapshot.data;
-            return Scaffold(
-              appBar: AppBar(
-                title: Text(tracker!.name),
-                leading: IconButton(
-                  icon: const Icon(Icons.close),
-                  onPressed: () => GoRouter.of(context).go('/'),
-                ),
-                actions: [
-                  IconButton(
-                    icon: const Icon(Icons.edit),
-                    onPressed: () => _editTracker(tracker, provider),
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.delete),
-                    onPressed: () => _deleteTracker(tracker, provider),
-                  ),
-                ],
-              ),
-              body: LayoutBuilder(builder: (context, constraints) {
-                if (constraints.isMobile) {
-                  return _buildMobileBody(
-                    context: context,
-                    tracker: tracker,
-                    provider: provider,
-                    constraints: constraints,
-                  );
-                } else {
-                  return _buildDesktopBody(
-                      context: context,
-                      tracker: tracker,
-                      provider: provider,
-                      constraints: constraints);
-                }
-              }),
-            );
-          });
-    });
+    final tracker = TrackerProvider.instance.get(widget.trackerId);
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(tracker!.name),
+        leading: IconButton(
+          icon: const Icon(Icons.close),
+          onPressed: () => GoRouter.of(context).go('/'),
+        ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.edit),
+            onPressed: () => _editTracker(tracker),
+          ),
+          IconButton(
+            icon: const Icon(Icons.delete),
+            onPressed: () => _deleteTracker(tracker),
+          ),
+        ],
+      ),
+      body: LayoutBuilder(builder: (context, constraints) {
+        if (constraints.isMobile) {
+          return _buildMobileBody(
+            context: context,
+            tracker: tracker,
+            constraints: constraints,
+          );
+        } else {
+          return _buildDesktopBody(
+              context: context, tracker: tracker, constraints: constraints);
+        }
+      }),
+    );
   }
 
   Widget _buildDesktopBody(
       {required BuildContext context,
       required Tracker tracker,
-      required TrackersProvider provider,
       required BoxConstraints constraints}) {
     final theme = Theme.of(context);
     final amountTheme =
@@ -117,13 +94,13 @@ class _TrackerDetailState extends State<TrackerDetail> {
                         backgroundColor: theme.colorScheme.onPrimary,
                       ),
                       Container(
-                        alignment: Alignment.center,
+                          alignment: Alignment.center,
                           child: Text(
-                        NumberFormat.percentPattern()
-                            .format((amountSpent / tracker.amount)),
-                        style: theme.textTheme.bodySmall,
+                            NumberFormat.percentPattern()
+                                .format((amountSpent / tracker.amount)),
+                            style: theme.textTheme.bodySmall,
                             textAlign: TextAlign.center,
-                      )),
+                          )),
                     ],
                   ),
                   const SizedBox(width: 16),
@@ -149,7 +126,6 @@ class _TrackerDetailState extends State<TrackerDetail> {
               const SizedBox(height: 4),
               const Divider(),
               const SizedBox(height: 16),
-
             ],
           ),
         ));
@@ -158,7 +134,6 @@ class _TrackerDetailState extends State<TrackerDetail> {
   Widget _buildMobileBody(
       {required BuildContext context,
       required Tracker tracker,
-      required TrackersProvider provider,
       required BoxConstraints constraints}) {
     return Container();
   }
@@ -169,7 +144,7 @@ class _TrackerDetailState extends State<TrackerDetail> {
     return formatter.format(amount);
   }
 
-  void _deleteTracker(Tracker tracker, TrackersProvider provider) async {
+  void _deleteTracker(Tracker tracker) async {
     final bool result = await showDialog<bool>(
             context: context,
             builder: (context) {
@@ -195,7 +170,7 @@ class _TrackerDetailState extends State<TrackerDetail> {
             }) ??
         false;
     if (result) {
-      provider.removeTracker(tracker);
+      tracker.delete();
       _exit();
     }
   }
@@ -204,11 +179,11 @@ class _TrackerDetailState extends State<TrackerDetail> {
     GoRouter.of(context).go('/');
   }
 
-  void _editTracker(Tracker tracker, TrackersProvider provider) async {
+  void _editTracker(Tracker tracker) async {
     final result = await showDialog(
         context: context, builder: (context) => AddTracker(tracker: tracker));
     if (result is Tracker) {
-      await provider.updateTracker(result);
+      result.save();
     }
   }
 }

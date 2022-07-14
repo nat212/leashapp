@@ -76,7 +76,7 @@ final appRouter = GoRouter(
         child: RootLayout(
           key: _scaffoldKey,
           currentIndex: 0,
-          child: TrackerDetail(trackerId: state.params['id']!),
+          child: TrackerDetail(trackerId: int.parse(state.params['id']!)),
         ),
       ),
     ),

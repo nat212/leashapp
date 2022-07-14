@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:hive/hive.dart';
 import 'package:leashapp/src/features/home/view/tracker_card.dart';
 import 'package:leashapp/src/shared/extensions.dart';
 
-import '../../../shared/classes/tracker.dart';
+import '../../../shared/models/models.dart';
 import '../../../shared/providers/trackers.dart';
 import '../../../shared/widgets/clickable.dart';
 
 class TrackerList extends StatefulWidget {
-  const TrackerList({Key? key, required this.trackersProvider})
+  const TrackerList({Key? key})
       : super(key: key);
-
-  final TrackersProvider trackersProvider;
 
   @override
   State<TrackerList> createState() => _TrackerListState();
@@ -20,8 +19,8 @@ class TrackerList extends StatefulWidget {
 class _TrackerListState extends State<TrackerList> {
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder<List<Tracker>>(
-        valueListenable: widget.trackersProvider,
+    return ValueListenableBuilder<Box<Tracker>>(
+        valueListenable: TrackerProvider.instance.listenable,
         builder: (context, trackers, child) {
           return trackers.isNotEmpty
               ? LayoutBuilder(
@@ -34,9 +33,9 @@ class _TrackerListState extends State<TrackerList> {
                               crossAxisAlignment: CrossAxisAlignment.stretch,
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                for (var tracker in trackers) ...[
+                                for (var tracker in trackers.values) ...[
                                   _trackerCard(tracker, constraints),
-                                  if (tracker != trackers.last)
+                                  if (tracker != trackers.values.last)
                                     const SizedBox(height: 16.0),
                                 ],
                               ],
@@ -55,7 +54,7 @@ class _TrackerListState extends State<TrackerList> {
                                         ? 4
                                         : 5,
                             children: [
-                              for (var tracker in trackers)
+                              for (var tracker in trackers.values)
                                 _trackerCard(tracker, constraints),
                             ],
                           );
@@ -73,10 +72,9 @@ class _TrackerListState extends State<TrackerList> {
   Widget _trackerCard(Tracker tracker, BoxConstraints constraints) {
     return Clickable(
         onTap: () => GoRouter.of(context)
-            .go('/trackers/${tracker.id}'),
+            .go('/trackers/${tracker.key}'),
         child: TrackerCard(
           tracker: tracker,
-          provider: widget.trackersProvider,
           constraints: constraints,
         ));
   }

@@ -38,13 +38,8 @@ class AuthProvider extends ValueNotifier<User?> {
   final LoggerService _logger = LoggerService(AuthProvider);
 
   AuthProvider._internal(this._auth) : super(null) {
-    _auth.authStateChanges().listen((User? user) {
-      if (user != null) {
-        _setUser(user);
-      } else {
-        _createAnonymousUser();
-        _logger.log('User is null, creating anonymous user');
-      }
+    _auth.authStateChanges().listen((event) {
+      _setUser(event);
     });
   }
 
@@ -52,14 +47,6 @@ class AuthProvider extends ValueNotifier<User?> {
   User? _user;
 
   User? get user => _user;
-
-  void _createAnonymousUser() {
-    _auth.signInAnonymously().then((UserCredential? userCredential) {
-      _setUser(userCredential?.user);
-    }).catchError((err) {
-      _logger.log('Error creating anonymous user: $err');
-    });
-  }
 
   void _setUser(User? user) {
     _user = user;
