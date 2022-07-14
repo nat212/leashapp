@@ -32,6 +32,9 @@ void main() async {
 
   if (supportsFirebase) {
     await _initFirebase();
+    AuthProvider.initialise(FirebaseAuth.instance);
+  } else {
+    AuthProvider.initialise(null);
   }
 
   if (isDesktop) {
@@ -40,10 +43,9 @@ void main() async {
   }
 
   // Setup providers
-  AuthProvider authProvider = AuthProvider.instance;
   await appSettings.SettingsProvider.load();
   await TrackerProvider.initialise();
-  runApp(LeashApp(authProvider: authProvider));
+  runApp(LeashApp(authProvider: AuthProvider.instance));
 }
 
 Future<void> _initFirebase() async {

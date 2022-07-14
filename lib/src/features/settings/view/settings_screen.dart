@@ -1,9 +1,7 @@
 import 'package:currency_picker/currency_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:leashapp/src/shared/extensions.dart';
 import 'package:leashapp/src/shared/providers/settings.dart';
-import 'package:leashapp/src/shared/widgets/user_builder.dart';
 
 import '../../../shared/providers/theme.dart';
 
@@ -30,8 +28,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
           padding: const EdgeInsets.all(32),
           child: ListView(
             children: <Widget>[
-              _buildAccountSection(),
-              const SizedBox(height: 16),
+              // TODO: Add syncing
+              // _buildAccountSection(),
+              // const SizedBox(height: 16),
               _buildThemeModeToggle(),
               const SizedBox(
                 height: 16,
@@ -95,7 +94,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     ThemeSettingsChange(settings: newSettings).dispatch(context);
   }
 
-  Widget _buildAccountSection() {
+ /* Widget _buildAccountSection() {
     return UserBuilder(builder: (context, user) {
       return user == null || user.isAnonymous
           ? ListTile(
@@ -111,5 +110,5 @@ class _SettingsScreenState extends State<SettingsScreen> {
               trailing: const Icon(Icons.person),
             );
     });
-  }
+  }*/
 }

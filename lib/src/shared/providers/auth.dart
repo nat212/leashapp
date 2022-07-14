@@ -29,21 +29,34 @@ class LoginException implements Exception {
         );
 }
 
-class AuthProvider extends ValueNotifier<User?> {
-  static final AuthProvider _instance =
-      AuthProvider._internal(FirebaseAuth.instance);
+class BaseAuthProvider extends ValueNotifier<User?> {
+  BaseAuthProvider(super.value);
+
+
+}
+
+class NoAuthProvider extends BaseAuthProvider {
+  NoAuthProvider() : super(null);
+}
+
+class AuthProvider extends BaseAuthProvider {
+  static late final AuthProvider _instance;
 
   static AuthProvider get instance => _instance;
 
   final LoggerService _logger = LoggerService(AuthProvider);
 
   AuthProvider._internal(this._auth) : super(null) {
-    _auth.authStateChanges().listen((event) {
+    _auth?.authStateChanges().listen((event) {
       _setUser(event);
     });
   }
 
-  final FirebaseAuth _auth;
+  static initialise(FirebaseAuth? instance) {
+    _instance = AuthProvider._internal(instance);
+  }
+
+  final FirebaseAuth? _auth;
   User? _user;
 
   User? get user => _user;
@@ -100,8 +113,11 @@ class AuthProvider extends ValueNotifier<User?> {
   }
 
   Future<User?> signInWithEmailPassword(String email, String password) async {
+    if (_auth == null) {
+      return null;
+    }
     try {
-      return await _auth
+      return await _auth!
           .signInWithEmailAndPassword(email: email, password: password)
           .then((UserCredential creds) {
         _setUser(creds.user);

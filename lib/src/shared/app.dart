@@ -8,7 +8,7 @@ import 'package:leashapp/src/shared/router.dart';
 class LeashApp extends StatefulWidget {
   const LeashApp({Key? key, required this.authProvider}) : super(key: key);
 
-  final AuthProvider authProvider;
+  final BaseAuthProvider authProvider;
 
   @override
   State<LeashApp> createState() => _LeashAppState();

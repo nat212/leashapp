@@ -20,11 +20,14 @@ class _HomeScreenState extends State<HomeScreen> {
         title: const Text('Trackers'),
       ),
       body: const TrackerList(),
-      floatingActionButton: FloatingActionButton(
+      floatingActionButtonAnimator: FloatingActionButtonAnimator.scaling,
+      floatingActionButton: FloatingActionButton.extended(
+        isExtended: true,
         onPressed: () {
           _addTracker();
         },
-        child: const Icon(Icons.add),
+        label: const Text('Add Tracker'),
+        icon: const Icon(Icons.add),
       ),
     );
   }
