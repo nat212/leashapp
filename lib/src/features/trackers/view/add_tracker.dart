@@ -29,6 +29,7 @@ class _AddTrackerState extends State<AddTracker> {
   @override
   Widget build(BuildContext context) {
     return Dialog(
+      child: SingleChildScrollView(
         child: Container(
             padding: const EdgeInsets.all(16),
             constraints: const BoxConstraints(maxWidth: 300),
@@ -126,6 +127,6 @@ class _AddTrackerState extends State<AddTracker> {
                       ],
                     )
                   ],
-                ))));
+                )))));
   }
 }

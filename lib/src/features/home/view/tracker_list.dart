@@ -9,8 +9,7 @@ import '../../../shared/providers/trackers.dart';
 import '../../../shared/widgets/clickable.dart';
 
 class TrackerList extends StatefulWidget {
-  const TrackerList({Key? key})
-      : super(key: key);
+  const TrackerList({Key? key}) : super(key: key);
 
   @override
   State<TrackerList> createState() => _TrackerListState();
@@ -26,20 +25,22 @@ class _TrackerListState extends State<TrackerList> {
               ? LayoutBuilder(
                   builder: (context, constraints) {
                     return constraints.isMobile
-                        ? Padding(
-                            padding: const EdgeInsets.all(16.0),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.stretch,
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                for (var tracker in trackers.values) ...[
-                                  _trackerCard(tracker, constraints),
-                                  if (tracker != trackers.values.last)
-                                    const SizedBox(height: 16.0),
-                                ],
-                              ],
-                            ))
+                        ? SingleChildScrollView(
+                            child: Padding(
+                                padding: const EdgeInsets.all(16.0),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.stretch,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    for (var tracker in trackers.values) ...[
+                                      _trackerCard(tracker, constraints),
+                                      if (tracker != trackers.values.last)
+                                        const SizedBox(height: 16.0),
+                                    ],
+                                  ],
+                                )))
                         : GridView.count(
                             shrinkWrap: true,
                             padding: const EdgeInsets.all(20),
@@ -71,8 +72,7 @@ class _TrackerListState extends State<TrackerList> {
 
   Widget _trackerCard(Tracker tracker, BoxConstraints constraints) {
     return Clickable(
-        onTap: () => GoRouter.of(context)
-            .go('/trackers/${tracker.key}'),
+        onTap: () => GoRouter.of(context).go('/trackers/${tracker.key}'),
         child: TrackerCard(
           tracker: tracker,
           constraints: constraints,
