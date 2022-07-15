@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:leashapp/src/features/home/view/home_screen.dart';
-import 'package:leashapp/src/features/settings/view/signin_screen.dart';
+import 'package:leashapp/src/features/home/home.dart';
 import 'package:leashapp/src/features/trackers/trackers.dart';
 import 'package:leashapp/src/shared/views/root_layout.dart';
 
@@ -44,16 +43,55 @@ final appRouter = GoRouter(
   routes: [
     // HomeScreen
     GoRoute(
-      path: '/',
-      pageBuilder: (context, state) => const MaterialPage<void>(
-        key: _pageKey,
-        child: RootLayout(
-          key: _scaffoldKey,
-          currentIndex: 0,
-          child: HomeScreen(),
-        ),
-      ),
-    ),
+        path: '/',
+        pageBuilder: (context, state) => const MaterialPage<void>(
+              key: _pageKey,
+              child: RootLayout(
+                key: _scaffoldKey,
+                currentIndex: 0,
+                child: HomeScreen(),
+              ),
+            ),
+        routes: [
+          GoRoute(
+              path: 'trackers/:id',
+              pageBuilder: (context, state) => MaterialPage<void>(
+                    key: state.pageKey,
+                    child: RootLayout(
+                      key: _scaffoldKey,
+                      currentIndex: 0,
+                      child: TrackerDetail(
+                          trackerId: int.parse(state.params['id']!)),
+                    ),
+                  ),
+              routes: [
+                GoRoute(
+                  path: 'log',
+                  pageBuilder: (context, state) => MaterialPage<void>(
+                    key: state.pageKey,
+                    child: RootLayout(
+                      key: _scaffoldKey,
+                      currentIndex: 0,
+                      child: LogSpendScreen(
+                        trackerId: int.parse(state.params['id']!),
+                      ),
+                    ),
+                  ),
+                ),
+                GoRoute(
+                  path: 'log/:logId',
+                  pageBuilder: (context, state) => MaterialPage<void>(
+                      key: state.pageKey,
+                      child: RootLayout(
+                          key: _scaffoldKey,
+                          currentIndex: 0,
+                          child: LogSpendScreen(
+                            trackerId: int.parse(state.params['id']!),
+                            logId: int.parse(state.params['logId']!),
+                          ))),
+                )
+              ]),
+        ]),
     GoRoute(
         path: '/settings',
         pageBuilder: (context, state) => const MaterialPage<void>(
@@ -63,22 +101,5 @@ final appRouter = GoRouter(
               currentIndex: 1,
               child: SettingsScreen(),
             ))),
-    GoRoute(
-        path: '/signin',
-        pageBuilder: (context, state) => const MaterialPage<void>(
-            key: _pageKey,
-            child: RootLayout(
-                key: _scaffoldKey, currentIndex: 1, child: SigninScreen()))),
-    GoRoute(
-      path: '/trackers/:id',
-      pageBuilder: (context, state) => MaterialPage<void>(
-        key: state.pageKey,
-        child: RootLayout(
-          key: _scaffoldKey,
-          currentIndex: 0,
-          child: TrackerDetail(trackerId: int.parse(state.params['id']!)),
-        ),
-      ),
-    ),
   ],
 );

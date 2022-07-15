@@ -2,8 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:hive/hive.dart';
-import 'package:intl/intl.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:leashapp/src/shared/extensions.dart';
 import 'package:leashapp/src/shared/providers/settings.dart';
 import 'package:leashapp/src/shared/providers/trackers.dart';
@@ -23,44 +22,57 @@ class TrackerDetail extends StatefulWidget {
 class _TrackerDetailState extends State<TrackerDetail> {
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder<Box<Tracker>>(
+    return ValueListenableBuilder<TrackerProvider>(
         valueListenable: TrackerProvider.instance.listenable,
-        builder: (context, box, _) {
-          final tracker = box.get(widget.trackerId);
-          return Scaffold(
-            appBar: AppBar(
-              title: Text(tracker!.name),
-              centerTitle: true,
-              leading: IconButton(
-                icon: const Icon(Icons.close),
-                onPressed: () => GoRouter.of(context).go('/'),
-              ),
-              actions: [
-                IconButton(
-                  icon: const Icon(Icons.edit),
-                  onPressed: () => _editTracker(tracker),
-                ),
-                IconButton(
-                  icon: const Icon(Icons.delete),
-                  onPressed: () => _deleteTracker(tracker),
-                ),
-              ],
-            ),
-            body: LayoutBuilder(builder: (context, constraints) {
-              if (constraints.isMobile) {
-                return _buildMobileBody(
-                  context: context,
-                  tracker: tracker,
-                  constraints: constraints,
-                );
-              } else {
-                return _buildDesktopBody(
-                    context: context,
-                    tracker: tracker,
-                    constraints: constraints);
-              }
-            }),
-          );
+        builder: (context, provider, _) {
+          final tracker = provider.get(widget.trackerId);
+          return tracker != null
+              ? ValueListenableBuilder(
+                  valueListenable: (tracker.logs!.box as Box).listenable(),
+                  builder: (context, box, _) {
+                    return Scaffold(
+                      appBar: AppBar(
+                        title: Text(tracker.name),
+                        leading: IconButton(
+                          icon: const Icon(Icons.close),
+                          onPressed: () => GoRouter.of(context).pop(),
+                        ),
+                        centerTitle: true,
+                        actions: [
+                          IconButton(
+                            icon: const Icon(Icons.edit),
+                            onPressed: () => _editTracker(tracker),
+                          ),
+                          IconButton(
+                            icon: const Icon(Icons.delete),
+                            onPressed: () => _deleteTracker(tracker),
+                          ),
+                        ],
+                      ),
+                      floatingActionButton: FloatingActionButton.extended(
+                          onPressed: () {
+                            _logSpend(tracker);
+                          },
+                          label: const Text('Log Spend'),
+                          icon: const Icon(Icons.account_balance_wallet)),
+                      body: SingleChildScrollView(
+                          child: LayoutBuilder(builder: (context, constraints) {
+                        if (constraints.isMobile) {
+                          return _buildMobileBody(
+                            context: context,
+                            tracker: tracker,
+                            constraints: constraints,
+                          );
+                        } else {
+                          return _buildDesktopBody(
+                              context: context,
+                              tracker: tracker,
+                              constraints: constraints);
+                        }
+                      })),
+                    );
+                  })
+              : Container();
         });
   }
 
@@ -68,7 +80,7 @@ class _TrackerDetailState extends State<TrackerDetail> {
     final theme = Theme.of(context);
     final amountTheme =
         theme.textTheme.headline6!.copyWith(color: theme.colorScheme.primary);
-    final amountSpent = tracker.amount * 0.7754;
+    final errorTheme = amountTheme.copyWith(color: theme.colorScheme.error);
     return <Widget>[
       if (tracker.description != null)
         Text(tracker.description!,
@@ -84,23 +96,25 @@ class _TrackerDetailState extends State<TrackerDetail> {
             alignment: Alignment.center,
             children: [
               CircularProgressIndicator(
-                value: amountSpent / tracker.amount,
+                value: tracker.percentageSpent,
                 backgroundColor: theme.colorScheme.onPrimary,
               ),
               Container(
                   alignment: Alignment.center,
                   child: Text(
-                    NumberFormat.percentPattern()
-                        .format((amountSpent / tracker.amount)),
-                    style: theme.textTheme.bodySmall,
+                    min(tracker.percentageSpent, 1.0).percentage(),
+                    style: tracker.percentageSpent >= 1.0
+                        ? theme.textTheme.bodySmall!
+                            .copyWith(color: theme.colorScheme.error)
+                        : theme.textTheme.bodySmall,
                     textAlign: TextAlign.center,
                   )),
             ],
           ),
           const SizedBox(width: 16),
           Text(
-            _formatCurrency(amountSpent),
-            style: amountTheme,
+            SettingsProvider.currency.format(tracker.totalSpent),
+            style: tracker.percentageSpent >= 1 ? errorTheme : amountTheme,
             textAlign: TextAlign.center,
           ),
           const SizedBox(width: 8),
@@ -111,7 +125,7 @@ class _TrackerDetailState extends State<TrackerDetail> {
           ),
           const SizedBox(width: 8),
           Text(
-            _formatCurrency(tracker.amount),
+            SettingsProvider.currency.format(tracker.amount),
             style: amountTheme,
             textAlign: TextAlign.center,
           ),
@@ -119,8 +133,56 @@ class _TrackerDetailState extends State<TrackerDetail> {
       ),
       const SizedBox(height: 4),
       const Divider(),
-      const SizedBox(height: 16),
     ];
+  }
+
+  Widget _buildLogList(
+      BuildContext context, Tracker tracker, BoxConstraints constraints) {
+    return tracker.logs!.isNotEmpty
+        ? ListView.builder(
+            itemCount: tracker.logs!.length,
+            shrinkWrap: true,
+            itemBuilder: (context, index) {
+              final log = tracker.logs![index];
+              return ListTile(
+                title: Text(log.label),
+                subtitle: Text(SettingsProvider.currency.format(log.amount)),
+                onTap: () {
+                  context.go('/trackers/${tracker.key}/log/${log.key}');
+                },
+                trailing: IconButton(
+                  icon: const Icon(Icons.delete),
+                  onPressed: () => _deleteLog(log),
+                ),
+              );
+            })
+        : Container(
+            alignment: Alignment.topCenter,
+            padding: const EdgeInsets.only(top: 16),
+            child: const Text('No spendings have been logged yet'),
+          );
+  }
+
+  Future<void> _deleteLog(Log log) async {
+    final result = await showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+              title: const Text('Delete Log'),
+              content: const Text('Are you sure you want to delete this log?'),
+              actions: [
+                TextButton(
+                  child: const Text('Cancel'),
+                  onPressed: () => Navigator.pop(context, false),
+                ),
+                TextButton(
+                  child: const Text('Delete'),
+                  onPressed: () => Navigator.pop(context, true),
+                ),
+              ],
+            ));
+    if (result == true) {
+      log.delete();
+    }
   }
 
   Widget _buildDesktopBody(
@@ -140,6 +202,7 @@ class _TrackerDetailState extends State<TrackerDetail> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               ..._buildHeader(tracker),
+              _buildLogList(context, tracker, constraints),
             ],
           ),
         ));
@@ -154,15 +217,10 @@ class _TrackerDetailState extends State<TrackerDetail> {
       child: Column(
         children: [
           ..._buildHeader(tracker),
+          _buildLogList(context, tracker, constraints),
         ],
       ),
     );
-  }
-
-  String _formatCurrency(double amount) {
-    final formatter =
-        NumberFormat.simpleCurrency(name: SettingsProvider.currency.code);
-    return formatter.format(amount);
   }
 
   void _deleteTracker(Tracker tracker) async {
@@ -206,5 +264,9 @@ class _TrackerDetailState extends State<TrackerDetail> {
     if (result is Tracker) {
       result.save();
     }
+  }
+
+  void _logSpend(Tracker tracker) {
+    context.go('/trackers/${tracker.key}/log');
   }
 }

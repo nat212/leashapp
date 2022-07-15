@@ -2,7 +2,6 @@ import 'dart:ui';
 
 import 'package:currency_picker/currency_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:leashapp/src/shared/extensions.dart';
 import 'package:leashapp/src/shared/providers/settings.dart';
 import 'package:leashapp/src/shared/widgets/animated_blur.dart';
@@ -12,9 +11,7 @@ import '../../../shared/providers/theme.dart';
 
 class TrackerCard extends StatefulWidget {
   const TrackerCard(
-      {Key? key,
-      required this.tracker,
-      required this.constraints})
+      {Key? key, required this.tracker, required this.constraints})
       : super(key: key);
 
   final Tracker tracker;
@@ -90,13 +87,23 @@ class _TrackerCardState extends State<TrackerCard> {
                                     const SizedBox(height: 8),
                                     Center(
                                       child: Text(
-                                          '${_amountAsCurrency(widget.tracker.amount, currency)} left',
+                                          '${currency.format(widget.tracker.remaining)} left',
                                           style: theme.textTheme.bodyMedium!
                                               .copyWith(
                                                   fontWeight: FontWeight.bold,
-                                                  color: theme
-                                                      .colorScheme.secondary)),
+                                                  color: widget.tracker
+                                                              .remaining <=
+                                                          0
+                                                      ? theme.colorScheme.error
+                                                      : theme.colorScheme
+                                                          .secondary)),
                                     ),
+                                    Padding(
+                                        padding: const EdgeInsets.fromLTRB(
+                                            16, 16, 16, 0),
+                                        child: LinearProgressIndicator(
+                                          value: widget.tracker.percentageSpent,
+                                        )),
                                   ]),
                             ),
                             AnimatedOpacity(
@@ -104,52 +111,46 @@ class _TrackerCardState extends State<TrackerCard> {
                                 duration: kThemeAnimationDuration,
                                 curve: animationCurve,
                                 child: AnimatedBlurContainer(
-                                  blurRadius: _hovered ? 3.0 : 0.001,
-                                      child: Container(
-                                    alignment: Alignment.center,
-                                    decoration: BoxDecoration(
-                                      color: theme.colorScheme.surface
-                                          .withOpacity(0.5),
-                                    ),
-                                    child: widget.tracker.description == null
-                                        ? Container()
-                                        : Center(
-                                            child: Text(
-                                                widget.tracker.description!),
-                                          )))),
+                                    blurRadius: _hovered ? 3.0 : 0.001,
+                                    child: Container(
+                                        alignment: Alignment.center,
+                                        decoration: BoxDecoration(
+                                          color: theme.colorScheme.surface
+                                              .withOpacity(0.5),
+                                        ),
+                                        child:
+                                            widget.tracker.description == null
+                                                ? Container()
+                                                : Center(
+                                                    child: Text(widget
+                                                        .tracker.description!),
+                                                  )))),
                           ]))))
               : Container(
                   decoration: BoxDecoration(
                     borderRadius: themeBorderRadius,
                     color: theme.colorScheme.surfaceVariant,
                   ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                  children: [
+            child: Column(mainAxisSize: MainAxisSize.min, children: [
                     Padding(
-                      padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
-                      child: Column(mainAxisSize: MainAxisSize.min, children: [
-                        Text(widget.tracker.name,
-                            style: Theme.of(context).textTheme.headline6),
-                        const SizedBox(height: 16),
-                        if (widget.tracker.description != null)
-                          Text(widget.tracker.description!,
-                              overflow: TextOverflow.ellipsis),
-                        if (widget.tracker.description != null)
-                          const SizedBox(height: 16.0),
-                        Text(
-                            '${_amountAsCurrency(widget.tracker.amount, currency)} left',
-                            style: theme.textTheme.bodyMedium!.copyWith(
-                                fontWeight: FontWeight.bold,
-                                color: theme.colorScheme.secondary)),
-                      ])),
+                        padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
+                        child:
+                            Column(mainAxisSize: MainAxisSize.min, children: [
+                          Text(widget.tracker.name,
+                              style: Theme.of(context).textTheme.headline6),
+                          const SizedBox(height: 16),
+                          if (widget.tracker.description != null)
+                            Text(widget.tracker.description!,
+                                overflow: TextOverflow.ellipsis),
+                          if (widget.tracker.description != null)
+                            const SizedBox(height: 16.0),
+                          Text('${currency.format(widget.tracker.amount)} left',
+                              style: theme.textTheme.bodyMedium!.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  color: theme.colorScheme.secondary)),
+                        ])),
                   ]),
                 );
         });
-  }
-
-  String _amountAsCurrency(double amount, Currency currency) {
-    final currencyFormat = NumberFormat.simpleCurrency(name: currency.code);
-    return currencyFormat.format(amount);
   }
 }
