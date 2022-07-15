@@ -192,6 +192,13 @@ class ThemeProvider extends InheritedWidget {
     return const ButtonThemeData();
   }
 
+  PopupMenuThemeData popupMenuTheme(ColorScheme colors) {
+    return PopupMenuThemeData(
+      color: colors.surface,
+      shape: shapeMedium,
+    );
+  }
+
   ThemeData light([Color? targetColor]) {
     final colorScheme = colors(Brightness.light, targetColor);
     return ThemeData.light().copyWith(
@@ -209,6 +216,7 @@ class ThemeProvider extends InheritedWidget {
       floatingActionButtonTheme: floatingActionButtonTheme(colorScheme),
       inputDecorationTheme: inputDecorationTheme(colorScheme),
       buttonTheme: buttonTheme(colorScheme),
+      popupMenuTheme: popupMenuTheme(colorScheme),
       scaffoldBackgroundColor: colorScheme.background,
       useMaterial3: true,
     );
@@ -231,6 +239,7 @@ class ThemeProvider extends InheritedWidget {
       floatingActionButtonTheme: floatingActionButtonTheme(colorScheme),
       inputDecorationTheme: inputDecorationTheme(colorScheme),
       buttonTheme: buttonTheme(colorScheme),
+      popupMenuTheme: popupMenuTheme(colorScheme),
       scaffoldBackgroundColor: colorScheme.background,
       useMaterial3: true,
     );

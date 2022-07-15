@@ -73,7 +73,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   void _setCurrency() {
     showCurrencyPicker(
         context: context,
-        favorite: {_currency.code, 'ZAR', 'USD'}.toList(),
+        favorite: [_currency.code],
         onSelect: (Currency currency) {
           setState(() {
             _currency = currency;

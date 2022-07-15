@@ -8,7 +8,6 @@ import 'package:leashapp/src/shared/providers/settings.dart';
 import 'package:leashapp/src/shared/providers/trackers.dart';
 
 import '../../../shared/models/models.dart';
-import '../trackers.dart';
 
 class TrackerDetail extends StatefulWidget {
   const TrackerDetail({Key? key, required this.trackerId}) : super(key: key);
@@ -259,11 +258,7 @@ class _TrackerDetailState extends State<TrackerDetail> {
   }
 
   void _editTracker(Tracker tracker) async {
-    final result = await showDialog(
-        context: context, builder: (context) => AddTracker(tracker: tracker));
-    if (result is Tracker) {
-      result.save();
-    }
+    context.go('/trackers/${tracker.key}/edit');
   }
 
   void _logSpend(Tracker tracker) {

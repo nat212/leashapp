@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:leashapp/src/features/home/view/tracker_list.dart';
-import 'package:leashapp/src/features/trackers/trackers.dart';
-import 'package:leashapp/src/shared/providers/trackers.dart';
-
-import '../../../shared/models/models.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -13,14 +10,48 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  TrackerSortMode _sortMode = TrackerSortMode.created;
+  TrackerSortDirection _sortDirection = TrackerSortDirection.ascending;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Trackers'),
         centerTitle: true,
+        actions: [
+          IconButton(
+              onPressed: () async {
+                final result = await showMenu<TrackerSortMode>(
+                    context: context,
+                    position: RelativeRect.fromLTRB(
+                        MediaQuery.of(context).size.width - 48,
+                        MediaQuery.of(context).padding.top,
+                        0,
+                        0),
+                    items: [
+                      const PopupMenuItem(
+                        value: TrackerSortMode.name,
+                        child: Text('Sort by name'),
+                      ),
+                      const PopupMenuItem(
+                        value: TrackerSortMode.created,
+                        child: Text('Sort by creation date'),
+                      ),
+                    ]);
+                if (result != null) {
+                  setState(() {
+                    _sortMode = result;
+                  });
+                }
+              },
+              icon: const Icon(Icons.sort)),
+        ],
       ),
-      body: const TrackerList(),
+      body: TrackerList(
+        sortDirection: _sortDirection,
+        sortMode: _sortMode,
+      ),
       floatingActionButton: FloatingActionButton.extended(
         isExtended: true,
         onPressed: () {
@@ -33,14 +64,6 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _addTracker() async {
-    final result = await showDialog(
-        context: context, builder: (context) => const AddTracker());
-    if (result is Tracker) {
-      TrackerProvider.instance.addTracker(
-        name: result.name,
-        amount: result.amount,
-        description: result.description,
-      );
-    }
+    context.go('/trackers/add');
   }
 }

@@ -157,6 +157,10 @@ class _LogSpendScreenState extends State<LogSpendScreen> {
   }
 
   Widget _buildForm(BuildContext context, Tracker tracker) {
+    final currency = SettingsProvider.currency;
+    final currencySymbol = currency.symbol;
+    final symbolOnLeft = currency.symbolOnLeft;
+    final spaceBetween = currency.spaceBetweenAmountAndSymbol;
     return Form(
       key: _formKey,
       child: Column(
@@ -182,7 +186,12 @@ class _LogSpendScreenState extends State<LogSpendScreen> {
           TextFormField(
             decoration: InputDecoration(
               labelText: 'Amount *',
-              prefixText: SettingsProvider.currency.symbol,
+              prefixText: symbolOnLeft
+                  ? '$currencySymbol${spaceBetween ? ' ' : ''}'
+                  : null,
+              suffixText: !symbolOnLeft
+                  ? '${spaceBetween ? ' ' : ''}$currencySymbol'
+                  : null,
             ),
             keyboardType: TextInputType.number,
             initialValue: _amount?.toString(),
