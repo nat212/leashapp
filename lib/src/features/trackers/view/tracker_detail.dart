@@ -138,23 +138,29 @@ class _TrackerDetailState extends State<TrackerDetail> {
 
   Widget _buildLogList(
       BuildContext context, Tracker tracker, BoxConstraints constraints) {
-    return ListView.builder(
-        itemCount: tracker.logs!.length,
-        shrinkWrap: true,
-        itemBuilder: (context, index) {
-          final log = tracker.logs![index];
-          return ListTile(
-            title: Text(log.label),
-            subtitle: Text(SettingsProvider.currency.format(log.amount)),
-            onTap: () {
-              context.go('/trackers/${tracker.key}/log/${log.key}');
-            },
-            trailing: IconButton(
-              icon: const Icon(Icons.delete),
-              onPressed: () => _deleteLog(log),
-            ),
+    return tracker.logs!.isNotEmpty
+        ? ListView.builder(
+            itemCount: tracker.logs!.length,
+            shrinkWrap: true,
+            itemBuilder: (context, index) {
+              final log = tracker.logs![index];
+              return ListTile(
+                title: Text(log.label),
+                subtitle: Text(SettingsProvider.currency.format(log.amount)),
+                onTap: () {
+                  context.go('/trackers/${tracker.key}/log/${log.key}');
+                },
+                trailing: IconButton(
+                  icon: const Icon(Icons.delete),
+                  onPressed: () => _deleteLog(log),
+                ),
+              );
+            })
+        : Container(
+            alignment: Alignment.topCenter,
+            padding: const EdgeInsets.only(top: 16),
+            child: const Text('No spendings have been logged yet'),
           );
-        });
   }
 
   Future<void> _deleteLog(Log log) async {
@@ -211,6 +217,7 @@ class _TrackerDetailState extends State<TrackerDetail> {
       child: Column(
         children: [
           ..._buildHeader(tracker),
+          _buildLogList(context, tracker, constraints),
         ],
       ),
     );

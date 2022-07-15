@@ -117,7 +117,17 @@ class _LogSpendScreenState extends State<LogSpendScreen> {
 
   Widget _buildMobileBody(
       BuildContext context, BoxConstraints constraints, Tracker tracker) {
-    return Container();
+    return Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          children: [
+            _buildHeader(context, tracker),
+            const SizedBox(height: 16),
+            const Divider(),
+            const SizedBox(height: 16),
+            _buildForm(context, tracker),
+          ],
+        ));
   }
 
   Widget _buildHeader(BuildContext context, Tracker tracker) {
