@@ -67,7 +67,10 @@ class DefaultFirebaseOptions {
     messagingSenderId: '720481261480',
     projectId: 'leashapp-co-za',
     storageBucket: 'leashapp-co-za.appspot.com',
-    iosClientId: '720481261480-8pmpk47irvjlbcb0026naatlq8g3sgm2.apps.googleusercontent.com',
+    androidClientId:
+        '720481261480-ic9t5bqncpdkt7srsgr2fidqemkukhgq.apps.googleusercontent.com',
+    iosClientId:
+        '720481261480-8pmpk47irvjlbcb0026naatlq8g3sgm2.apps.googleusercontent.com',
     iosBundleId: 'za.co.leashapp',
   );
 
@@ -77,7 +80,10 @@ class DefaultFirebaseOptions {
     messagingSenderId: '720481261480',
     projectId: 'leashapp-co-za',
     storageBucket: 'leashapp-co-za.appspot.com',
-    iosClientId: '720481261480-8pmpk47irvjlbcb0026naatlq8g3sgm2.apps.googleusercontent.com',
+    androidClientId:
+        '720481261480-ic9t5bqncpdkt7srsgr2fidqemkukhgq.apps.googleusercontent.com',
+    iosClientId:
+        '720481261480-8pmpk47irvjlbcb0026naatlq8g3sgm2.apps.googleusercontent.com',
     iosBundleId: 'za.co.leashapp',
   );
 }

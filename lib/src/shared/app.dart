@@ -1,14 +1,11 @@
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
-import 'package:leashapp/src/shared/providers/auth.dart';
 import 'package:leashapp/src/shared/providers/settings.dart';
 import 'package:leashapp/src/shared/providers/theme.dart';
 import 'package:leashapp/src/shared/router.dart';
 
 class LeashApp extends StatefulWidget {
-  const LeashApp({Key? key, required this.authProvider}) : super(key: key);
-
-  final BaseAuthProvider authProvider;
+  const LeashApp({Key? key}) : super(key: key);
 
   @override
   State<LeashApp> createState() => _LeashAppState();

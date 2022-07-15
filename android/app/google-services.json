@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "720481261480-ic9t5bqncpdkt7srsgr2fidqemkukhgq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "za.co.leashapp",
+            "certificate_hash": "7f9135363e5df083cd2f78cec5e969cf2376c8d3"
+          }
+        },
+        {
           "client_id": "720481261480-6rm7ef531g19okkqo0fkv70rbtf7cs7j.apps.googleusercontent.com",
           "client_type": 3
         }

@@ -18,9 +18,9 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Trackers'),
+        centerTitle: true,
       ),
       body: const TrackerList(),
-      floatingActionButtonAnimator: FloatingActionButtonAnimator.scaling,
       floatingActionButton: FloatingActionButton.extended(
         isExtended: true,
         onPressed: () {

@@ -2,7 +2,6 @@ import 'dart:ui';
 
 import 'package:currency_picker/currency_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:leashapp/src/shared/extensions.dart';
 import 'package:leashapp/src/shared/providers/settings.dart';
 import 'package:leashapp/src/shared/widgets/animated_blur.dart';
@@ -90,7 +89,7 @@ class _TrackerCardState extends State<TrackerCard> {
                                     const SizedBox(height: 8),
                                     Center(
                                       child: Text(
-                                          '${_amountAsCurrency(widget.tracker.amount, currency)} left',
+                                          '${currency.format(widget.tracker.amount)} left',
                                           style: theme.textTheme.bodyMedium!
                                               .copyWith(
                                                   fontWeight: FontWeight.bold,
@@ -138,18 +137,13 @@ class _TrackerCardState extends State<TrackerCard> {
                         if (widget.tracker.description != null)
                           const SizedBox(height: 16.0),
                         Text(
-                            '${_amountAsCurrency(widget.tracker.amount, currency)} left',
-                            style: theme.textTheme.bodyMedium!.copyWith(
-                                fontWeight: FontWeight.bold,
-                                color: theme.colorScheme.secondary)),
+                            '${currency.format(widget.tracker.amount)} left',
+                              style: theme.textTheme.bodyMedium!.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  color: theme.colorScheme.secondary)),
                       ])),
                   ]),
                 );
         });
-  }
-
-  String _amountAsCurrency(double amount, Currency currency) {
-    final currencyFormat = NumberFormat.simpleCurrency(name: currency.code);
-    return currencyFormat.format(amount);
   }
 }

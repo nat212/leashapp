@@ -20,13 +20,13 @@ class TrackerAdapter extends TypeAdapter<Tracker> {
       name: fields[0] as String,
       description: fields[1] as String?,
       amount: fields[2] as double,
-    );
+    )..logs = (fields[4] as HiveList?)?.castHiveList();
   }
 
   @override
   void write(BinaryWriter writer, Tracker obj) {
     writer
-      ..writeByte(4)
+      ..writeByte(5)
       ..writeByte(0)
       ..write(obj.name)
       ..writeByte(1)
@@ -34,7 +34,9 @@ class TrackerAdapter extends TypeAdapter<Tracker> {
       ..writeByte(2)
       ..write(obj.amount)
       ..writeByte(3)
-      ..write(obj.created);
+      ..write(obj.created)
+      ..writeByte(4)
+      ..write(obj.logs);
   }
 
   @override

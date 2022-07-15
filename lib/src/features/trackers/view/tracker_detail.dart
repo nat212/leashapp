@@ -2,8 +2,6 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:hive/hive.dart';
-import 'package:intl/intl.dart';
 import 'package:leashapp/src/shared/extensions.dart';
 import 'package:leashapp/src/shared/providers/settings.dart';
 import 'package:leashapp/src/shared/providers/trackers.dart';
@@ -23,44 +21,53 @@ class TrackerDetail extends StatefulWidget {
 class _TrackerDetailState extends State<TrackerDetail> {
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder<Box<Tracker>>(
+    return ValueListenableBuilder<TrackerProvider>(
         valueListenable: TrackerProvider.instance.listenable,
-        builder: (context, box, _) {
-          final tracker = box.get(widget.trackerId);
-          return Scaffold(
-            appBar: AppBar(
-              title: Text(tracker!.name),
-              centerTitle: true,
-              leading: IconButton(
-                icon: const Icon(Icons.close),
-                onPressed: () => GoRouter.of(context).go('/'),
-              ),
-              actions: [
-                IconButton(
-                  icon: const Icon(Icons.edit),
-                  onPressed: () => _editTracker(tracker),
-                ),
-                IconButton(
-                  icon: const Icon(Icons.delete),
-                  onPressed: () => _deleteTracker(tracker),
-                ),
-              ],
-            ),
-            body: LayoutBuilder(builder: (context, constraints) {
-              if (constraints.isMobile) {
-                return _buildMobileBody(
-                  context: context,
-                  tracker: tracker,
-                  constraints: constraints,
-                );
-              } else {
-                return _buildDesktopBody(
-                    context: context,
-                    tracker: tracker,
-                    constraints: constraints);
-              }
-            }),
-          );
+        builder: (context, provider, _) {
+          final tracker = provider.get(widget.trackerId);
+          return tracker != null
+              ? Scaffold(
+                  appBar: AppBar(
+                    title: Text(tracker.name),
+                    leading: IconButton(
+                      icon: const Icon(Icons.close),
+                      onPressed: () => GoRouter.of(context).pop(),
+                    ),
+                    centerTitle: true,
+                    actions: [
+                      IconButton(
+                        icon: const Icon(Icons.edit),
+                        onPressed: () => _editTracker(tracker),
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.delete),
+                        onPressed: () => _deleteTracker(tracker),
+                      ),
+                    ],
+                  ),
+                  floatingActionButton: FloatingActionButton.extended(
+                      onPressed: () {
+                        _logSpend(tracker);
+                      },
+                      label: const Text('Log Spend'),
+                      icon: const Icon(Icons.account_balance_wallet)),
+                  body: SingleChildScrollView(
+                      child: LayoutBuilder(builder: (context, constraints) {
+                    if (constraints.isMobile) {
+                      return _buildMobileBody(
+                        context: context,
+                        tracker: tracker,
+                        constraints: constraints,
+                      );
+                    } else {
+                      return _buildDesktopBody(
+                          context: context,
+                          tracker: tracker,
+                          constraints: constraints);
+                    }
+                  })),
+                )
+              : Container();
         });
   }
 
@@ -68,7 +75,6 @@ class _TrackerDetailState extends State<TrackerDetail> {
     final theme = Theme.of(context);
     final amountTheme =
         theme.textTheme.headline6!.copyWith(color: theme.colorScheme.primary);
-    final amountSpent = tracker.amount * 0.7754;
     return <Widget>[
       if (tracker.description != null)
         Text(tracker.description!,
@@ -84,14 +90,13 @@ class _TrackerDetailState extends State<TrackerDetail> {
             alignment: Alignment.center,
             children: [
               CircularProgressIndicator(
-                value: amountSpent / tracker.amount,
+                value: tracker.percentageSpent,
                 backgroundColor: theme.colorScheme.onPrimary,
               ),
               Container(
                   alignment: Alignment.center,
                   child: Text(
-                    NumberFormat.percentPattern()
-                        .format((amountSpent / tracker.amount)),
+                    tracker.percentageSpent.percentage(),
                     style: theme.textTheme.bodySmall,
                     textAlign: TextAlign.center,
                   )),
@@ -99,7 +104,7 @@ class _TrackerDetailState extends State<TrackerDetail> {
           ),
           const SizedBox(width: 16),
           Text(
-            _formatCurrency(amountSpent),
+            SettingsProvider.currency.format(tracker.totalSpent),
             style: amountTheme,
             textAlign: TextAlign.center,
           ),
@@ -111,7 +116,7 @@ class _TrackerDetailState extends State<TrackerDetail> {
           ),
           const SizedBox(width: 8),
           Text(
-            _formatCurrency(tracker.amount),
+            SettingsProvider.currency.format(tracker.amount),
             style: amountTheme,
             textAlign: TextAlign.center,
           ),
@@ -159,12 +164,6 @@ class _TrackerDetailState extends State<TrackerDetail> {
     );
   }
 
-  String _formatCurrency(double amount) {
-    final formatter =
-        NumberFormat.simpleCurrency(name: SettingsProvider.currency.code);
-    return formatter.format(amount);
-  }
-
   void _deleteTracker(Tracker tracker) async {
     final bool result = await showDialog<bool>(
             context: context,
@@ -206,5 +205,9 @@ class _TrackerDetailState extends State<TrackerDetail> {
     if (result is Tracker) {
       result.save();
     }
+  }
+
+  void _logSpend(Tracker tracker) {
+    context.go('/trackers/${tracker.key}/log');
   }
 }

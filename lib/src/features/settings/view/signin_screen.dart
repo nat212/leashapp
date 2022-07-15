@@ -4,7 +4,7 @@ import 'package:email_validator/email_validator.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:leashapp/src/shared/providers/auth.dart';
+import 'package:leashapp/src/shared/providers/auth.dart.bak';
 
 enum _SigninScreenMode {
   signin,

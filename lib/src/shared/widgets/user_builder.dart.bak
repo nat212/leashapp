@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:leashapp/src/shared/providers/auth.dart';
+import 'package:leashapp/src/shared/providers/auth.dart.bak';
 
 class UserBuilder extends StatelessWidget {
   const UserBuilder({Key? key, required this.builder}) : super(key: key);

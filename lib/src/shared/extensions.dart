@@ -1,5 +1,6 @@
 import 'package:currency_picker/currency_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 extension BreakpointUtils on BoxConstraints {
   bool get isTablet => maxWidth > 730;
@@ -37,4 +38,17 @@ extension SerialisedThemeMode on ThemeMode {
 
 extension HumanReadableCurrency on Currency {
   String get humanReadable => '$name ($code)';
+}
+
+extension DoubleSum on Iterable<double> {
+  double sum() {
+    return length > 0 ? reduce((value, element) => value + element) : 0;
+  }
+}
+
+extension Percentage on double {
+  String percentage() {
+    final formatter = NumberFormat.percentPattern();
+    return formatter.format(this);
+  }
 }
