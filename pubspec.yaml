@@ -75,10 +75,10 @@ dev_dependencies:
 flutter_icons:
   android: "launcher_icon"
   ios: true
-  image_path_ios: "assets/icon/icon_ios.png"
-  image_path: "assets/icon/leash_icon.png"
-  adaptive_icon_background: "#ffffff"
-  adaptive_icon_foreground: "assets/icon/leash_icon.png"
+  image_path_ios: "assets/icon/512w/Icon-512.png"
+  image_path: "assets/icon/Icon.png"
+  adaptive_icon_background: "#00e78e"
+  adaptive_icon_foreground: "assets/icon/Icon-foreground.png"
   remove_alpha_ios: true
 
 # The following section is specific to Flutter packages.
