@@ -77,6 +77,18 @@ final appRouter = GoRouter(
                       ),
                     ),
                   ),
+                ),
+                GoRoute(
+                  path: 'log/:logId',
+                  pageBuilder: (context, state) => MaterialPage<void>(
+                      key: state.pageKey,
+                      child: RootLayout(
+                          key: _scaffoldKey,
+                          currentIndex: 0,
+                          child: LogSpendScreen(
+                            trackerId: int.parse(state.params['id']!),
+                            logId: int.parse(state.params['logId']!),
+                          ))),
                 )
               ]),
         ]),

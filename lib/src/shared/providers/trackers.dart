@@ -56,9 +56,16 @@ class TrackerProvider {
 
   Tracker? get(int key) {
     final tracker = _box.get(key);
-    if (tracker != null && tracker.logs == null) {
-      tracker.logs = HiveList(_logBox);
-    }
     return tracker;
+  }
+
+  void addLog({required Tracker tracker, required Log log}) {
+    _logBox.add(log);
+    tracker.logs!.add(log);
+    tracker.save();
+  }
+
+  Log? getLog(int logId) {
+    return _logBox.get(logId);
   }
 }
