@@ -1,6 +1,5 @@
 import 'dart:ui';
 
-import 'package:currency_picker/currency_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:leashapp/src/shared/extensions.dart';
 import 'package:leashapp/src/shared/providers/settings.dart';
@@ -30,7 +29,6 @@ class _TrackerCardState extends State<TrackerCard> {
     return ValueListenableBuilder<Settings>(
         valueListenable: SettingsProvider.instance,
         builder: (context, value, child) {
-          final Currency currency = value.currency;
           const animationCurve = Curves.easeInOut;
           final themeBorderRadius =
               ThemeProvider.of(context).mediumBorderRadius;
@@ -80,30 +78,7 @@ class _TrackerCardState extends State<TrackerCard> {
                               child: Column(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
-                                    Text(widget.tracker.name,
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .headline6),
-                                    const SizedBox(height: 8),
-                                    Center(
-                                      child: Text(
-                                          '${currency.format(widget.tracker.remaining)} left',
-                                          style: theme.textTheme.bodyMedium!
-                                              .copyWith(
-                                                  fontWeight: FontWeight.bold,
-                                                  color: widget.tracker
-                                                              .remaining <=
-                                                          0
-                                                      ? theme.colorScheme.error
-                                                      : theme.colorScheme
-                                                          .secondary)),
-                                    ),
-                                    Padding(
-                                        padding: const EdgeInsets.fromLTRB(
-                                            16, 16, 16, 0),
-                                        child: LinearProgressIndicator(
-                                          value: widget.tracker.percentageSpent,
-                                        )),
+                                    ..._cardContents(),
                                   ]),
                             ),
                             AnimatedOpacity(
@@ -131,26 +106,43 @@ class _TrackerCardState extends State<TrackerCard> {
                     borderRadius: themeBorderRadius,
                     color: theme.colorScheme.surfaceVariant,
                   ),
-            child: Column(mainAxisSize: MainAxisSize.min, children: [
+                  child: Column(mainAxisSize: MainAxisSize.min, children: [
                     Padding(
                         padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
                         child:
                             Column(mainAxisSize: MainAxisSize.min, children: [
-                          Text(widget.tracker.name,
-                              style: Theme.of(context).textTheme.headline6),
-                          const SizedBox(height: 16),
-                          if (widget.tracker.description != null)
-                            Text(widget.tracker.description!,
-                                overflow: TextOverflow.ellipsis),
-                          if (widget.tracker.description != null)
-                            const SizedBox(height: 16.0),
-                          Text('${currency.format(widget.tracker.amount)} left',
-                              style: theme.textTheme.bodyMedium!.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                  color: theme.colorScheme.secondary)),
+                          ..._cardContents(),
                         ])),
                   ]),
                 );
         });
+  }
+
+  List<Widget> _cardContents() {
+    final theme = Theme.of(context);
+    final currency = SettingsProvider.currency;
+    return [
+      Text(widget.tracker.name, style: Theme.of(context).textTheme.headline6),
+      const SizedBox(height: 8),
+      if (widget.constraints.isMobile &&
+          widget.tracker.description != null) ...[
+        Text(widget.tracker.description!),
+        const SizedBox(height: 8),
+      ],
+      Center(
+        child: Text('${currency.format(widget.tracker.remaining)} left',
+            style: theme.textTheme.bodyMedium!.copyWith(
+                fontWeight: FontWeight.bold,
+                color: widget.tracker.remaining <= 0
+                    ? theme.colorScheme.error
+                    : theme.colorScheme.secondary)),
+      ),
+      Padding(
+          padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+          child: LinearProgressIndicator(
+            value: widget.tracker.percentageSpent,
+            backgroundColor: theme.colorScheme.onPrimary,
+          )),
+    ];
   }
 }

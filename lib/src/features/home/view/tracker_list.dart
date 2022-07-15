@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:leashapp/src/features/home/view/tracker_card.dart';
 import 'package:leashapp/src/shared/extensions.dart';
 
@@ -70,11 +71,15 @@ class _TrackerListState extends State<TrackerList> {
   }
 
   Widget _trackerCard(Tracker tracker, BoxConstraints constraints) {
-    return Clickable(
-        onTap: () => context.go('/trackers/${tracker.key}'),
-        child: TrackerCard(
-          tracker: tracker,
-          constraints: constraints,
-        ));
+    return ValueListenableBuilder(
+        valueListenable: (tracker.logs!.box as Box).listenable(),
+        builder: (context, _, __) {
+          return Clickable(
+              onTap: () => context.go('/trackers/${tracker.key}'),
+              child: TrackerCard(
+                tracker: tracker,
+                constraints: constraints,
+              ));
+        });
   }
 }
