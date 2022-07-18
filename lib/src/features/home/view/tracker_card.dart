@@ -97,9 +97,11 @@ class _TrackerCardState extends State<TrackerCard> {
                                             widget.tracker.description == null
                                                 ? Container()
                                                 : Center(
-                                                    child: Text(widget
-                                                        .tracker.description!),
-                                                  )))),
+                                                    child: Text(
+                                                    widget.tracker.description!,
+                                                    overflow:
+                                                        TextOverflow.ellipsis),
+                                              )))),
                           ]))))
               : Container(
                   decoration: BoxDecoration(
