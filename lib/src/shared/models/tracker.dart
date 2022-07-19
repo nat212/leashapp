@@ -25,6 +25,8 @@ class Tracker extends HiveObject {
   @HiveField(4)
   late HiveList<Log>? logs;
 
+  bool selected = false;
+
   double get totalSpent => logs!.map((e) => e.amount).sum();
 
   double get remaining => amount - totalSpent;
