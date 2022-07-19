@@ -10,11 +10,15 @@ import '../../../shared/providers/theme.dart';
 
 class TrackerCard extends StatefulWidget {
   const TrackerCard(
-      {Key? key, required this.tracker, required this.constraints})
+      {Key? key,
+      required this.tracker,
+      required this.constraints,
+      this.selected = false})
       : super(key: key);
 
   final Tracker tracker;
   final BoxConstraints constraints;
+  final bool selected;
 
   @override
   State<TrackerCard> createState() => _TrackerCardState();
@@ -32,98 +36,96 @@ class _TrackerCardState extends State<TrackerCard> {
           const animationCurve = Curves.easeInOut;
           final themeBorderRadius =
               ThemeProvider.of(context).mediumBorderRadius;
-          final borderRadius =
-              _hovered ? BorderRadius.circular(20) : themeBorderRadius;
-          return widget.constraints.isTablet
-              ? MouseRegion(
-                  cursor: SystemMouseCursors.click,
-                  onEnter: (_) {
-                    setState(() {
-                      _hovered = true;
-                    });
-                  },
-                  onExit: (_) {
-                    setState(() {
-                      _hovered = false;
-                    });
-                  },
+          final borderRadius = _hovered || widget.selected
+              ? BorderRadius.circular(20)
+              : themeBorderRadius;
+          return MouseRegion(
+              cursor: SystemMouseCursors.click,
+              onEnter: (_) {
+                if (widget.constraints.isMobile) {
+                  return;
+                }
+                setState(() {
+                  _hovered = true;
+                });
+              },
+              onExit: (_) {
+                if (widget.constraints.isMobile) {
+                  return;
+                }
+                setState(() {
+                  _hovered = false;
+                });
+              },
                   child: AnimatedContainer(
                       duration: kThemeAnimationDuration,
-                      curve: animationCurve,
-                      decoration: BoxDecoration(
-                        borderRadius: borderRadius,
-                        color: theme.colorScheme.surfaceVariant,
-                        border: Border.all(
-                          color: theme.colorScheme.outline
-                              .withOpacity(_hovered ? 1 : 0),
-                          width: 1,
-                        ),
-                      ),
-                      foregroundDecoration: BoxDecoration(
-                        borderRadius: borderRadius,
+                  curve: animationCurve,
+                  constraints: const BoxConstraints(
+                    maxHeight: 180,
+                    minHeight: 0,
+                  ),
+                  decoration: BoxDecoration(
+                    borderRadius: borderRadius,
+                    color: theme.colorScheme.surfaceVariant,
+                    border: Border.all(
+                      color: theme.colorScheme.outline
+                          .withOpacity(_hovered || widget.selected ? 1 : 0),
+                      width: 1,
+                    ),
+                  ),
+                  foregroundDecoration: BoxDecoration(
+                    borderRadius: borderRadius,
                       ),
                       child: TweenAnimationBuilder<BorderRadius>(
                           duration: kThemeAnimationDuration,
-                          curve: animationCurve,
-                          tween: Tween(
-                              begin: BorderRadius.zero, end: borderRadius),
-                          builder: (context, borderRadius, child) => ClipRRect(
-                                clipBehavior: Clip.antiAlias,
-                                borderRadius: borderRadius,
-                                child: child,
-                              ),
-                          child: Stack(children: [
-                            Container(
-                              alignment: Alignment.center,
-                              child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    ..._cardContents(),
-                                  ]),
-                            ),
-                            AnimatedOpacity(
-                                opacity: _hovered ? 1 : 0,
-                                duration: kThemeAnimationDuration,
-                                curve: animationCurve,
-                                child: AnimatedBlurContainer(
-                                    blurRadius: _hovered ? 3.0 : 0.001,
-                                    child: Container(
-                                        alignment: Alignment.center,
-                                        decoration: BoxDecoration(
-                                          color: theme.colorScheme.surface
-                                              .withOpacity(0.5),
-                                        ),
-                                        child: widget.tracker.description ==
-                                                null
-                                            ? Container()
-                                            : Container(
-                                                alignment: Alignment.center,
-                                                padding:
-                                                    const EdgeInsets.all(8),
-                                                child: Text(
-                                                  widget.tracker.description!,
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                  maxLines: 4,
-                                                  textAlign: TextAlign.center,
-                                                  softWrap: true,
-                                                ),
-                                              )))),
-                          ]))))
-              : Container(
-                  decoration: BoxDecoration(
-                    borderRadius: themeBorderRadius,
-                    color: theme.colorScheme.surfaceVariant,
-                  ),
-                  child: Column(mainAxisSize: MainAxisSize.min, children: [
-                    Padding(
-                        padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
-                        child:
-                            Column(mainAxisSize: MainAxisSize.min, children: [
-                          ..._cardContents(),
-                        ])),
-                  ]),
-                );
+                      curve: animationCurve,
+                      tween: Tween(begin: BorderRadius.zero, end: borderRadius),
+                      builder: (context, borderRadius, child) => ClipRRect(
+                            clipBehavior: Clip.antiAlias,
+                            borderRadius: borderRadius,
+                            child: child,
+                          ),
+                      child: Stack(children: [
+                        Container(
+                          alignment: Alignment.center,
+                          padding: widget.constraints.isMobile
+                              ? const EdgeInsets.symmetric(
+                                  vertical: 16, horizontal: 8)
+                              : const EdgeInsets.all(0),
+                          child:
+                              Column(mainAxisSize: MainAxisSize.min, children: [
+                            ..._cardContents(),
+                          ]),
+                        ),
+                        AnimatedOpacity(
+                            opacity: _hovered || widget.selected ? 1 : 0,
+                            duration: kThemeAnimationDuration,
+                            curve: animationCurve,
+                            child: AnimatedBlurContainer(
+                                blurRadius:
+                                    _hovered || widget.selected ? 3.0 : 0.001,
+                                child: Container(
+                                  alignment: Alignment.center,
+                                  decoration: BoxDecoration(
+                                    color: theme.colorScheme.surface
+                                        .withOpacity(0.5),
+                                  ),
+                                  child: widget.tracker.selected ||
+                                          widget.constraints.isMobile
+                                      ? Icon(Icons.check,
+                                          color: theme.colorScheme.secondary,
+                                          size: 48)
+                                      : widget.tracker.description == null
+                                          ? Container()
+                                          : Text(
+                                              widget.tracker.description!,
+                                              overflow: TextOverflow.ellipsis,
+                                              maxLines: 4,
+                                              textAlign: TextAlign.center,
+                                              softWrap: true,
+                                            ),
+                                ))),
+                      ]))));
         });
   }
 
@@ -134,7 +136,8 @@ class _TrackerCardState extends State<TrackerCard> {
       Text(widget.tracker.name, style: Theme.of(context).textTheme.headline6),
       const SizedBox(height: 8),
       if (widget.constraints.isMobile &&
-          widget.tracker.description != null) ...[
+          widget.tracker.description != null &&
+          widget.tracker.description!.isNotEmpty) ...[
         Text(
           widget.tracker.description!,
           overflow: TextOverflow.ellipsis,
