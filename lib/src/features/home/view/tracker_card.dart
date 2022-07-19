@@ -93,14 +93,21 @@ class _TrackerCardState extends State<TrackerCard> {
                                           color: theme.colorScheme.surface
                                               .withOpacity(0.5),
                                         ),
-                                        child:
-                                            widget.tracker.description == null
-                                                ? Container()
-                                                : Center(
-                                                    child: Text(
-                                                    widget.tracker.description!,
-                                                    overflow:
-                                                        TextOverflow.ellipsis),
+                                        child: widget.tracker.description ==
+                                                null
+                                            ? Container()
+                                            : Container(
+                                                alignment: Alignment.center,
+                                                padding:
+                                                    const EdgeInsets.all(8),
+                                                child: Text(
+                                                  widget.tracker.description!,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                  maxLines: 4,
+                                                  textAlign: TextAlign.center,
+                                                  softWrap: true,
+                                                ),
                                               )))),
                           ]))))
               : Container(
@@ -128,7 +135,13 @@ class _TrackerCardState extends State<TrackerCard> {
       const SizedBox(height: 8),
       if (widget.constraints.isMobile &&
           widget.tracker.description != null) ...[
-        Text(widget.tracker.description!),
+        Text(
+          widget.tracker.description!,
+          overflow: TextOverflow.ellipsis,
+          maxLines: 3,
+          softWrap: true,
+          textAlign: TextAlign.center,
+        ),
         const SizedBox(height: 8),
       ],
       Center(
