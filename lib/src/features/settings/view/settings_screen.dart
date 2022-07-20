@@ -1,6 +1,8 @@
 import 'package:currency_picker/currency_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:leashapp/src/shared/extensions.dart';
+import 'package:leashapp/src/shared/providers/app_info.dart';
 import 'package:leashapp/src/shared/providers/settings.dart';
 
 import '../../../shared/providers/theme.dart';
@@ -37,6 +39,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 height: 16,
               ),
               _buildCurrencyToggle(),
+              _buildAboutSection(),
             ],
           )),
     );
@@ -66,6 +69,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
       trailing: const Icon(Icons.arrow_drop_down),
       onTap: () {
         _setCurrency();
+      },
+    );
+  }
+
+  Widget _buildAboutSection() {
+    return ListTile(
+      title: const Text('About'),
+      subtitle: Text(AppInfo.summary),
+      onTap: () {
+        context.go('/about');
       },
     );
   }

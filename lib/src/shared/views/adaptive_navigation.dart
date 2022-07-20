@@ -22,17 +22,19 @@ class AdaptiveNavigation extends StatelessWidget {
         return Scaffold(
             body:
                 Row(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-          NavigationRail(
-            extended: dimens.maxWidth >= 800,
-            minExtendedWidth: 180,
-            destinations: destinations
-                .map((e) => NavigationRailDestination(
-                      icon: e.icon,
-                      label: Text(e.label),
-                    ))
-                .toList(),
-            selectedIndex: selectedIndex,
-            onDestinationSelected: onDestinationSelected,
+          SafeArea(
+            child: NavigationRail(
+              extended: dimens.maxWidth >= 800,
+              minExtendedWidth: 180,
+              destinations: destinations
+                  .map((e) => NavigationRailDestination(
+                        icon: e.icon,
+                        label: Text(e.label),
+                      ))
+                  .toList(),
+              selectedIndex: selectedIndex,
+              onDestinationSelected: onDestinationSelected,
+            ),
           ),
           const VerticalDivider(width: 2),
           Expanded(child: child),

@@ -42,6 +42,11 @@ android {
     flavorDimensions "flavor-type"
 
     productFlavors {
+        prod {
+            dimension "flavor-type"
+            applicationId "za.co.leashapp"
+            resValue "string", "app_name", "Leash"
+        }
         dev {
             dimension "flavor-type"
             applicationId "za.co.leashapp.dev"
@@ -90,6 +95,9 @@ android {
     buildTypes {
         release {
             signingConfig signingConfigs.release
+            ndk {
+                debugSymbolLevel 'FULL'
+            }
         }
     }
 }
@@ -101,5 +109,3 @@ flutter {
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }
-
-android.buildTypes.release.ndk.debugSymbolLevel = 'FULL'

@@ -86,6 +86,8 @@ class _TrackerDetailState extends State<TrackerDetail> {
             style: Theme.of(context).textTheme.bodyText1,
             textAlign: TextAlign.center),
       if (tracker.description != null) const SizedBox(height: 32),
+      Text('Amount Spent', style: theme.textTheme.headline6),
+      const SizedBox(height: 8),
       Row(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -194,7 +196,7 @@ class _TrackerDetailState extends State<TrackerDetail> {
           constraints: BoxConstraints(
             maxWidth: min(constraints.maxWidth * 0.6, 600),
           ),
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 16),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
@@ -212,7 +214,7 @@ class _TrackerDetailState extends State<TrackerDetail> {
       required Tracker tracker,
       required BoxConstraints constraints}) {
     return Padding(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 16),
       child: Column(
         children: [
           ..._buildHeader(tracker),

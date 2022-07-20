@@ -124,5 +124,15 @@ final appRouter = GoRouter(
               currentIndex: 1,
               child: SettingsScreen(),
             ))),
+    GoRoute(
+        path: '/about',
+        pageBuilder: (context, state) => MaterialPage<void>(
+              key: state.pageKey,
+              child: const RootLayout(
+                key: _scaffoldKey,
+                currentIndex: 1,
+                child: AboutScreen(),
+              ),
+            ))
   ],
 );

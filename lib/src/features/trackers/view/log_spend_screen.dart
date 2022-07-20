@@ -111,6 +111,9 @@ class _LogSpendScreenState extends State<LogSpendScreen> {
                 const Divider(),
                 const SizedBox(height: 16),
                 _buildForm(context, tracker),
+                const SizedBox(height: 16),
+                const Divider(),
+                _buildFooter(context, tracker),
               ],
             )));
   }
@@ -118,14 +121,16 @@ class _LogSpendScreenState extends State<LogSpendScreen> {
   Widget _buildMobileBody(
       BuildContext context, BoxConstraints constraints, Tracker tracker) {
     return Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 16),
         child: Column(
           children: [
             _buildHeader(context, tracker),
-            const SizedBox(height: 16),
             const Divider(),
             const SizedBox(height: 16),
             _buildForm(context, tracker),
+            const SizedBox(height: 16),
+            const Divider(),
+            _buildFooter(context, tracker),
           ],
         ));
   }
@@ -139,19 +144,42 @@ class _LogSpendScreenState extends State<LogSpendScreen> {
         amountTheme.copyWith(color: theme.colorScheme.error);
     final labelTheme =
         theme.textTheme.subtitle2!.copyWith(color: theme.colorScheme.secondary);
-    final remaining = tracker.remaining - (_amount ?? 0);
     return Column(
       children: [
         Row(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Text(currency.format(remaining),
-                style: remaining < 0 ? errorAmountTheme : amountTheme),
+            Text(currency.format(tracker.remaining),
+                style: tracker.remaining < 0 ? errorAmountTheme : amountTheme),
             const SizedBox(width: 8),
             Text('remaining', style: labelTheme),
           ],
         ),
+      ],
+    );
+  }
+
+  Widget _buildFooter(BuildContext context, Tracker tracker) {
+    final currency = SettingsProvider.currency;
+    final theme = Theme.of(context);
+    final amountTheme =
+        theme.textTheme.headline5!.copyWith(color: theme.colorScheme.secondary);
+    final errorAmountTheme =
+        amountTheme.copyWith(color: theme.colorScheme.error);
+    final labelTheme =
+        theme.textTheme.subtitle2!.copyWith(color: theme.colorScheme.secondary);
+    final remaining = tracker.remaining - (_amount ?? 0);
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Text('After this log, you will have', style: labelTheme),
+        const SizedBox(height: 8),
+        Text(currency.format(remaining),
+            style: remaining < 0 ? errorAmountTheme : amountTheme),
+        const SizedBox(height: 8),
+        Text('remaining', style: labelTheme),
       ],
     );
   }

@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:leashapp/src/shared/models/models.dart';
+import 'package:leashapp/src/shared/providers/app_info.dart';
 import 'package:leashapp/src/shared/providers/settings.dart';
 import 'package:leashapp/src/shared/providers/trackers.dart';
 import 'package:window_size/window_size.dart';
@@ -23,6 +24,7 @@ Future<void> initialiseApp() async {
   await _initFirebase();
 
   // Setup providers
+  await AppInfo.initialise();
   await SettingsProvider.load();
   await TrackerProvider.initialise();
 }
